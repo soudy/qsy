@@ -7,7 +7,7 @@ H = Gate('H', 1/np.sqrt(2) * np.array([[1,  1],
 S = Gate('S', np.array([[1, 0],
                         [0, 1j]]), 1)
 
-Sdag = Gate('Sd', S.matrix.conjugate().transpose(), 1)
+Sdag = Gate('Sdag', S.matrix.conjugate().transpose(), 1)
 
 def C(gate):
     """Create a controlled-U gate."""
