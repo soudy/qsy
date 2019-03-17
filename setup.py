@@ -8,5 +8,8 @@ setup(
     author_email='soud@pm.me',
     description='A quantum computer state vector simulator',
     license='MIT',
-    install_requires=['numpy>=1.13', 'ply>=3']
+    install_requires=['numpy>=1.13', 'ply>=3'],
+    entry_points = {
+        'console_scripts': ['qsyasm=qsyasm.cli:main']
+    }
 )

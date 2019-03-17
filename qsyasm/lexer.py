@@ -1,4 +1,5 @@
 import ply.lex as lex
+from .error import ParseError
 
 class QsyASMLexer:
     tokens = (
@@ -26,8 +27,7 @@ class QsyASMLexer:
     t_ignore = '\t\r '
     t_ignore_COMMENT = r';.*'
 
-    def __init__(self, filename='<stdin>', **kwargs):
-        self.filename = filename
+    def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
 
     def t_INTEGER(self, t):
@@ -41,9 +41,6 @@ class QsyASMLexer:
         return t
 
     def t_error(self, t):
-        print('{}:{}:{}: error: Unknown token \'{}\''.format(self.filename,
-                                                             t.lineno, t.lexpos,
-                                                             t.value[0]))
-        t.lexer.skip(1)
+        raise ParseError('Unknown token \'{}\''.format(t.value[0]), t)
 
 lexer = QsyASMLexer()

@@ -62,6 +62,11 @@ class QuantumRegister(Register):
 
         return measured_value
 
+    def to_dirac(self):
+        return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a.item(), i, n=self.size)
+                          for a, i in zip(self.state, itertools.count())
+                          if not np.isclose(a.item(), 0.0))
+
     def _apply_single_qubit_gate(self, gate, target):
         self._check_in_range(target)
 
@@ -111,8 +116,3 @@ class QuantumRegister(Register):
         if target < 0 or target >= self.size:
             raise Exception('Can\'t access qubit {}: register index out of' +
                     'range (register size {})'.format(target, self.size))
-
-    def to_dirac(self):
-        return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a.item(), i, n=self.size)
-                          for a, i in zip(self.state, itertools.count())
-                          if not np.isclose(a.item(), 0.0))

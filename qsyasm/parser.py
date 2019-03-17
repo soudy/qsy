@@ -2,6 +2,8 @@ import ply.yacc as yacc
 import itertools
 
 from . import tokens
+from .instruction import Instruction
+from .error import ParseError
 
 class QsyASMParser:
     tokens = tokens
@@ -24,8 +26,9 @@ class QsyASMParser:
                 p[0] += [p[2]]
 
     def p_instruction(self, p):
-        'instruction : term argument_list'
-        p[0] = (p[1], p[2])
+        '''instruction : term argument_list
+                       | param_term argument_list'''
+        p[0] = Instruction(p[1], p[2], p)
 
     def p_instruction_newline(self, p):
         'instruction : NEWLINE'
@@ -33,11 +36,16 @@ class QsyASMParser:
 
     def p_term(self, p):
         '''term : IDENT
+                | INTEGER
                 | lookup'''
         p[0] = p[1]
 
     def p_lookup(self, p):
         'lookup : IDENT LBRACKET INTEGER RBRACKET'
+        p[0] = (p[1], p[3])
+
+    def p_param_term(self, p):
+        'param_term : IDENT LPAREN argument_list RPAREN'
         p[0] = (p[1], p[3])
 
     def p_argument_list(self, p):
@@ -48,6 +56,9 @@ class QsyASMParser:
         'argument_list : term COMMA argument_list'
         p[0] = [p[1]]
         p[0] += p[3]
+
+    def p_error(self, p):
+        raise ParseError('Unexpected \'{}\''.format(p.type), p)
 
     def parse(self, s):
         return self.parser.parse(s, debug=False)

@@ -1,5 +1,8 @@
+from .error import ParseError
+
 class Operation:
     # Gates
+    GATES_START = 0
     I = 1
     X = 2
     Y = 3
@@ -16,11 +19,13 @@ class Operation:
     RY = 12
     RZ = 13
     CC = 14
+    GATES_END = 15
 
     # Registers
-    QR = 15
-    CR = 16
-)
+    QR = 16
+    CR = 17
+
+    MEASURE = 18
 
 operations = {
     'i': Operation.I,
@@ -42,17 +47,31 @@ operations = {
 
     'qreg': Operation.QR,
     'creg': Operation.CR,
+
+    'meas': Operation.MEASURE
 }
 
 class Instruction:
-    def __init__(self, op_name, args):
-        self.op = self._get_op(op_name)
-        self.op_name = op
+    def __init__(self, op, args, token):
+        self.op = op
         self.args = args
+        self.token = token
+        self.type = self._get_op_type()
 
-    def _get_op(self, op):
-        if not op in operations:
-            raise Exception('Unknown instruction "{}"'.format(op))
+    def is_gate(self):
+        return self.type > Operation.GATES_START and self.type < Operation.GATES_END
 
-        return operations[op]
+    def _get_op_type(self):
+        op_name = self.op
 
+        if isinstance(self.op, tuple):
+            # parameterized instruction like qreg[n] or c(x)
+            op_name, _ = self.op
+
+        if not op_name in operations:
+            raise ParseError('Unknown instruction \'{}\''.format(op_name), self.token)
+
+        return operations[op_name]
+
+    def __repr__(self):
+        return '{}<{} {}>'.format(self.__class__.__name__, self.op, self.args)
