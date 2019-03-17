@@ -5,6 +5,9 @@ class ClassicalRegister(Register):
         super().__init__(size)
         self.state = [0] * size
 
+    def set_state(self, state):
+        self.state = state
+
     def __getitem__(self, index):
         return self.state[index]
 

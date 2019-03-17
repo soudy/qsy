@@ -28,7 +28,7 @@ class QsyASMParser:
     def p_instruction(self, p):
         '''instruction : term argument_list
                        | param_term argument_list'''
-        p[0] = Instruction(p[1], p[2], p)
+        p[0] = Instruction(p[1], p[2], p.lineno(0), p.lexpos(0))
 
     def p_instruction_newline(self, p):
         'instruction : NEWLINE'
@@ -61,4 +61,4 @@ class QsyASMParser:
         raise ParseError('Unexpected \'{}\''.format(p.type), p)
 
     def parse(self, s):
-        return self.parser.parse(s, debug=False)
+        return self.parser.parse(s, debug=False, tracking=True)

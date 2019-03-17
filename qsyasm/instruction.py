@@ -52,10 +52,11 @@ operations = {
 }
 
 class Instruction:
-    def __init__(self, op, args, token):
+    def __init__(self, op, args, lineno, lexpos):
         self.op = op
         self.args = args
-        self.token = token
+        self.lineno = lineno
+        self.lexpos = lexpos
         self.type = self._get_op_type()
 
     def is_gate(self):

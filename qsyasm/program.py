@@ -42,22 +42,19 @@ class QsyASMProgram:
         try:
             instructions = self.parser.parse(self.input)
             self.eval(instructions)
+            print(self.env)
         except ParseError as e:
             raise ProgramError(self._error_message(e.token, e.msg))
 
     def eval(self, instructions):
         for instr in instructions:
             if instr.is_gate():
-                print('gate: ', instr)
                 self._eval_gate(instr)
             elif instr.type == Operation.QR:
-                print('qr: ', instr)
                 self._eval_qr(instr)
             elif instr.type == Operation.CR:
-                print('cr: ', instr)
                 self._eval_cr(instr)
             elif instr.type == Operation.MEASURE:
-                print('meas: ', instr)
                 self._eval_measure(instr)
 
     def _eval_gate(self, instr):
@@ -76,12 +73,37 @@ class QsyASMProgram:
             self.env['crs'][register_name] = ClassicalRegister(register_size)
 
     def _eval_measure(self, instr):
-        pass
+        target = instr.args[0]
+        target_name = target[0]
+
+        if len(instr.args) == 2 and len(instr.args[0]) != len(instr.args[1]):
+            raise ProgramError(self._error_message(
+                instr, 'Mismatched register sizes in measurement'
+            ))
+
+        if len(target) == 1:
+            # Measure all
+            measured = self.env['qrs'][target_name].measure_all()
+        elif len(target) == 2:
+            # Measure single qubit
+            qubit = target[1]
+            measured = self.env['qrs'][target_name].measure(qubit)
+
+        if len(instr.args) == 2:
+            # Save measurement to classical register
+            classical_target = instr.args[1]
+
+            if len(classical_target) == 1:
+                self.env['crs'][classical_target].set_state(measured)
+            elif len(classical_target) == 2:
+                register_name = classical_target[0]
+                register_index = classical_target[1]
+                self.env['crs'][register_name][register_index] = measured
 
     def _error_message(self, token, msg):
         column = self._find_column(token)
         return '{}:{}:{}: error: {}'.format(self.filename, token.lineno, column, msg)
 
     def _find_column(self, token):
-         line_start = self.input.rfind('\n', 0, token.lexpos) + 1
-         return (token.lexpos - line_start) + 1
+        line_start = self.input.rfind('\n', 0, token.lexpos) + 1
+        return (token.lexpos - line_start) + 1
