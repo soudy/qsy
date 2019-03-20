@@ -17,3 +17,26 @@ The output will be:
 ```
 +0.7071|00> +0.7071|11>
 ```
+
+### QsyASM
+Equivalently, the following QsyASM program does the same, and measures to a
+classical register:
+```asm
+qreg[2] q
+creg[2] c
+
+h q[0]
+cx q[0], q[1]
+
+meas q, c
+```
+Running it:
+```bash
+$ qsyasm examples/qsyasm/bell.qs
+q[2]: [0. 0. 0. 1.] (+1.0000|11>)
+      0.0 | 00
+      0.0 | 01
+      0.0 | 10
+      1.0 | 11
+c[2]: 11
+```

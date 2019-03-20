@@ -64,7 +64,7 @@ class QsyASMProgram:
 
     def dump_registers(self):
         for qr_name, qr in self.env['qrs'].items():
-            print('{:5}: {} ({})'.format(qr_name, qr.state, qr.to_dirac()))
+            print('{}[{}]: {} ({})'.format(qr_name, qr.size, qr.state, qr.to_dirac()))
 
             for i, state in np.ndenumerate(qr.state):
                 i = i[0]
@@ -72,7 +72,7 @@ class QsyASMProgram:
 
         for cr_name, cr in self.env['crs'].items():
             bits = ''.join([str(bit) for bit in cr.state])
-            print('{:5}: {}'.format(cr_name, bits))
+            print('{}[{}]: {}'.format(cr_name, cr.size, bits))
 
     def _eval_gate(self, instr):
         gate = OPERATION_GATES[instr.type]
@@ -101,31 +101,46 @@ class QsyASMProgram:
             self.env['crs'][register_name] = ClassicalRegister(register_size)
 
     def _eval_measure(self, instr):
-        target = instr.args[0]
-        target_name = target[0]
+        qtarget = instr.args[0]
+        qtarget_name = qtarget[0]
 
         if len(instr.args) == 2 and len(instr.args[0]) != len(instr.args[1]):
             raise ProgramError(self._error_message(
                 instr, 'Mismatched register sizes in measurement'
             ))
 
-        if len(target) == 1:
+        if len(instr.args) == 2 and len(qtarget) == 1:
+            # Ensure the classical and quantum registers are of the same size
+            # when measuring all qubits
+            qtarget_size = self.env['qrs'][qtarget].size
+            ctarget_size = self.env['crs'][ctarget].size
+
+            if qtarget_size != ctarget_size:
+                raise ProgramError(self._error_message(
+                    instr,
+                    'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
+                        qtarget_name, qtarget_size,
+                        ctarget[0], ctarget_size
+                    )
+                ))
+
+        if len(qtarget) == 1:
             # Measure all
-            measured = self.env['qrs'][target_name].measure_all()
-        elif len(target) == 2:
+            measured = self.env['qrs'][qtarget_name].measure_all()
+        elif len(qtarget) == 2:
             # Measure single qubit
-            qubit = target[1]
-            measured = self.env['qrs'][target_name].measure(qubit)
+            qubit = qtarget[1]
+            measured = self.env['qrs'][qtarget_name].measure(qubit)
 
         if len(instr.args) == 2:
             # Save measurement to classical register
-            classical_target = instr.args[1]
+            ctarget = instr.args[1]
 
-            if len(classical_target) == 1:
-                self.env['crs'][classical_target].set_state(measured)
-            elif len(classical_target) == 2:
-                register_name = classical_target[0]
-                register_index = classical_target[1]
+            if len(ctarget) == 1:
+                self.env['crs'][ctarget].set_state(measured)
+            elif len(ctarget) == 2:
+                register_name = ctarget[0]
+                register_index = ctarget[1]
                 self.env['crs'][register_name][register_index] = measured
 
     def _error_message(self, token, msg):
