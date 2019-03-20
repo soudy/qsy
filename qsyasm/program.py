@@ -15,7 +15,6 @@ OPERATION_GATES = {
     Operation.H: gates.H,
     Operation.S: gates.S,
     Operation.Sdag: gates.Sdag,
-    Operation.C: gates.C,
     Operation.CX: gates.C(gates.X),
     Operation.CZ: gates.C(gates.Z),
 
@@ -24,7 +23,6 @@ OPERATION_GATES = {
     Operation.RX: gates.Rx,
     Operation.RY: gates.Ry,
     Operation.RZ: gates.Rz,
-    Operation.CC: gates.CC,
     Operation.CCX: gates.CC(gates.X)
 }
 
@@ -109,21 +107,6 @@ class QsyASMProgram:
                 instr, 'Mismatched register sizes in measurement'
             ))
 
-        if len(instr.args) == 2 and len(qtarget) == 1:
-            # Ensure the classical and quantum registers are of the same size
-            # when measuring all qubits
-            qtarget_size = self.env['qrs'][qtarget].size
-            ctarget_size = self.env['crs'][ctarget].size
-
-            if qtarget_size != ctarget_size:
-                raise ProgramError(self._error_message(
-                    instr,
-                    'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
-                        qtarget_name, qtarget_size,
-                        ctarget[0], ctarget_size
-                    )
-                ))
-
         if len(qtarget) == 1:
             # Measure all
             measured = self.env['qrs'][qtarget_name].measure_all()
@@ -137,10 +120,24 @@ class QsyASMProgram:
             ctarget = instr.args[1]
 
             if len(ctarget) == 1:
+                if len(qtarget) == 1:
+                    # Ensure the classical and quantum registers are of the same size
+                    # when measuring all qubits
+                    qtarget_size = self.env['qrs'][qtarget].size
+                    ctarget_size = self.env['crs'][ctarget].size
+
+                    if qtarget_size != ctarget_size:
+                        raise ProgramError(self._error_message(
+                            instr,
+                            'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
+                                qtarget_name, qtarget_size,
+                                ctarget[0], ctarget_size
+                            )
+                        ))
+
                 self.env['crs'][ctarget].set_state(measured)
             elif len(ctarget) == 2:
-                register_name = ctarget[0]
-                register_index = ctarget[1]
+                register_name, register_index = ctarget
                 self.env['crs'][register_name][register_index] = measured
 
     def _error_message(self, token, msg):
