@@ -1,3 +1,5 @@
+import numpy as np
+
 from .error import ParseError, ProgramError
 from .parser import QsyASMParser
 from .instruction import Operation
@@ -14,13 +16,16 @@ OPERATION_GATES = {
     Operation.S: gates.S,
     Operation.Sdag: gates.Sdag,
     Operation.C: gates.C,
+    Operation.CX: gates.C(gates.X),
+    Operation.CZ: gates.C(gates.Z),
 
     Operation.T: gates.T,
     Operation.Tdag: gates.Tdag,
     Operation.RX: gates.Rx,
     Operation.RY: gates.Ry,
     Operation.RZ: gates.Rz,
-    Operation.CC: gates.CC
+    Operation.CC: gates.CC,
+    Operation.CCX: gates.CC(gates.X)
 }
 
 class QsyASMProgram:
@@ -42,7 +47,7 @@ class QsyASMProgram:
         try:
             instructions = self.parser.parse(self.input)
             self.eval(instructions)
-            print(self.env)
+            self.dump_registers()
         except ParseError as e:
             raise ProgramError(self._error_message(e.token, e.msg))
 
@@ -57,8 +62,31 @@ class QsyASMProgram:
             elif instr.type == Operation.MEASURE:
                 self._eval_measure(instr)
 
+    def dump_registers(self):
+        for qr_name, qr in self.env['qrs'].items():
+            print('{:5}: {} ({})'.format(qr_name, qr.state, qr.to_dirac()))
+
+            for i, state in np.ndenumerate(qr.state):
+                i = i[0]
+                print('  {:>7.5} | {:0{size}b}'.format(state, i, size=qr.size))
+
+        for cr_name, cr in self.env['crs'].items():
+            bits = ''.join([str(bit) for bit in cr.state])
+            print('{:5}: {}'.format(cr_name, bits))
+
     def _eval_gate(self, instr):
-        pass
+        gate = OPERATION_GATES[instr.type]
+        args = instr.args
+
+        # TODO: multi qubit gates across registers
+        register = args[0][0]
+        targets = [arg[1] for arg in args]
+
+        if callable(gate):
+            # Parameterized gates like C() or Rz().
+            pass
+
+        self.env['qrs'][register].apply_gate(gate, *targets)
 
     def _eval_qr(self, instr):
         register_size = instr.op[1]

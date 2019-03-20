@@ -12,20 +12,23 @@ class Operation:
     S = 6
     Sdag = 7
     C = 8
+    CX = 9
+    CZ = 10
 
-    T = 9
-    Tdag = 10
-    RX = 11
-    RY = 12
-    RZ = 13
-    CC = 14
-    GATES_END = 15
+    T = 11
+    Tdag = 12
+    RX = 13
+    RY = 14
+    RZ = 15
+    CC = 16
+    CCX = 17
+    GATES_END = 18
 
     # Registers
-    QR = 16
-    CR = 17
+    QR = 19
+    CR = 20
 
-    MEASURE = 18
+    MEASURE = 21
 
 operations = {
     'i': Operation.I,
@@ -37,6 +40,8 @@ operations = {
     's': Operation.S,
     'sdag': Operation.Sdag,
     'c': Operation.C,
+    'cx': Operation.CX,
+    'cz': Operation.CZ,
 
     't': Operation.T,
     'tdag': Operation.Tdag,
@@ -44,6 +49,7 @@ operations = {
     'ry': Operation.RY,
     'rz': Operation.RZ,
     'cc': Operation.CC,
+    'ccx': Operation.CCX,
 
     'qreg': Operation.QR,
     'creg': Operation.CR,

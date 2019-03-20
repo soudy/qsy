@@ -32,7 +32,8 @@ class QuantumRegister(Register):
         self.state[:] = 0
         self.state[measured] = 1
 
-        return [int(x) for x in bin(measured)[2:]]
+        binary_measurement = format(measured, '0{}b'.format(self.size))
+        return [int(x) for x in binary_measurement]
 
     def measure(self, target):
         self._check_in_range(target)
