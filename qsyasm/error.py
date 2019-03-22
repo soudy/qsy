@@ -4,5 +4,5 @@ class ParseError(Exception):
         self.msg = msg
         self.token = token
 
-class ProgramError(Exception):
+class QsyASMError(Exception):
     pass

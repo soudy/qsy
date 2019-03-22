@@ -1,10 +1,11 @@
 import numpy as np
 
-from .error import ParseError, ProgramError
+from .error import ParseError, QsyASMError
 from .parser import QsyASMParser
 from .instruction import Operation
+from .env import Env
 
-from qsy import QuantumRegister, ClassicalRegister, gates
+from qsy import gates
 
 OPERATION_GATES = {
     Operation.I: gates.I,
@@ -30,16 +31,13 @@ class QsyASMProgram:
     def __init__(self, args):
         self.filename = args['filename']
         self.parser = QsyASMParser()
-        self.env = {
-            'qrs': {},
-            'crs': {},
-        }
+        self.env = Env()
 
         try:
             with open(self.filename) as f:
                 self.input = f.read()
         except FileNotFoundError as e:
-            raise ProgramError('error reading input: {}'.format(str(e)))
+            raise QsyASMError('error reading input: {}'.format(str(e)))
 
     def run(self):
         try:
@@ -47,7 +45,7 @@ class QsyASMProgram:
             self.eval(instructions)
             self.dump_registers()
         except ParseError as e:
-            raise ProgramError(self._error_message(e.token, e.msg))
+            raise QsyASMError(self._error_message(e.token, e.msg))
 
     def eval(self, instructions):
         for instr in instructions:
@@ -61,14 +59,14 @@ class QsyASMProgram:
                 self._eval_measure(instr)
 
     def dump_registers(self):
-        for qr_name, qr in self.env['qrs'].items():
+        for qr_name, qr in self.env.qrs.items():
             print('{}[{}]: {} ({})'.format(qr_name, qr.size, qr.state, qr.to_dirac()))
 
             for i, state in np.ndenumerate(qr.state):
                 i = i[0]
                 print('  {:>7.5} | {:0{size}b}'.format(state, i, size=qr.size))
 
-        for cr_name, cr in self.env['crs'].items():
+        for cr_name, cr in self.env.crs.items():
             bits = ''.join([str(bit) for bit in cr.state])
             print('{}[{}]: {}'.format(cr_name, cr.size, bits))
 
@@ -81,39 +79,39 @@ class QsyASMProgram:
         targets = [arg[1] for arg in args]
 
         if callable(gate):
-            # Parameterized gates like C() or Rz().
+            # TODO: Parameterized gates like Rz().
             pass
 
-        self.env['qrs'][register].apply_gate(gate, *targets)
+        self.env.qr(register).apply_gate(gate, *targets)
 
     def _eval_qr(self, instr):
         register_size = instr.op[1]
 
         for register_name in instr.args:
-            self.env['qrs'][register_name] = QuantumRegister(register_size)
+            self.env.create_qr(register_name, register_size)
 
     def _eval_cr(self, instr):
         register_size = instr.op[1]
 
         for register_name in instr.args:
-            self.env['crs'][register_name] = ClassicalRegister(register_size)
+            self.env.create_cr(register_name, register_size)
 
     def _eval_measure(self, instr):
         qtarget = instr.args[0]
         qtarget_name = qtarget[0]
 
         if len(instr.args) == 2 and len(instr.args[0]) != len(instr.args[1]):
-            raise ProgramError(self._error_message(
+            raise QsyASMError(self._error_message(
                 instr, 'Mismatched register sizes in measurement'
             ))
 
         if len(qtarget) == 1:
             # Measure all
-            measured = self.env['qrs'][qtarget_name].measure_all()
+            measured = self.env.qr(qtarget_name).measure_all()
         elif len(qtarget) == 2:
             # Measure single qubit
             qubit = qtarget[1]
-            measured = self.env['qrs'][qtarget_name].measure(qubit)
+            measured = self.env.qr(qtarget_name).measure(qubit)
 
         if len(instr.args) == 2:
             # Save measurement to classical register
@@ -123,11 +121,11 @@ class QsyASMProgram:
                 if len(qtarget) == 1:
                     # Ensure the classical and quantum registers are of the same size
                     # when measuring all qubits
-                    qtarget_size = self.env['qrs'][qtarget].size
-                    ctarget_size = self.env['crs'][ctarget].size
+                    qtarget_size = self.env.qr(qtarget).size
+                    ctarget_size = self.env.cr(ctarget).size
 
                     if qtarget_size != ctarget_size:
-                        raise ProgramError(self._error_message(
+                        raise QsyASMError(self._error_message(
                             instr,
                             'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
                                 qtarget_name, qtarget_size,
@@ -135,10 +133,10 @@ class QsyASMProgram:
                             )
                         ))
 
-                self.env['crs'][ctarget].set_state(measured)
+                self.env.cr(ctarget).set_state(measured)
             elif len(ctarget) == 2:
                 register_name, register_index = ctarget
-                self.env['crs'][register_name][register_index] = measured
+                self.env.cr(register_name)[register_index] = measured
 
     def _error_message(self, token, msg):
         column = self._find_column(token)

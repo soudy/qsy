@@ -1,7 +1,7 @@
 import argparse
 import sys
 from .program import QsyASMProgram
-from .error import ProgramError
+from .error import QsyASMError
 
 def main():
     argparser = argparse.ArgumentParser(description='qsyasm assembly runner.')
@@ -13,6 +13,6 @@ def main():
     try:
         p = QsyASMProgram(args)
         p.run()
-    except ProgramError as e:
+    except QsyASMError as e:
         print(e, file=sys.stderr)
         sys.exit(-1)
