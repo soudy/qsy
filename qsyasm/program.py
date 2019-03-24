@@ -16,15 +16,16 @@ OPERATION_GATES = {
     Operation.H: gates.H,
     Operation.S: gates.S,
     Operation.Sdag: gates.Sdag,
-    Operation.CX: gates.C(gates.X),
-    Operation.CZ: gates.C(gates.Z),
+    Operation.CX: gates.CX,
+    Operation.CY: gates.CY,
+    Operation.CZ: gates.CZ,
 
     Operation.T: gates.T,
     Operation.Tdag: gates.Tdag,
     Operation.RX: gates.Rx,
     Operation.RY: gates.Ry,
     Operation.RZ: gates.Rz,
-    Operation.CCX: gates.CC(gates.X)
+    Operation.CCX: gates.CCX
 }
 
 class QsyASMProgram:

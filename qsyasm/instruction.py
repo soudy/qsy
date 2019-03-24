@@ -12,24 +12,25 @@ class Operation:
     S = 6
     Sdag = 7
     CX = 8
-    CZ = 9
+    CY = 9
+    CZ = 10
 
-    T = 10
-    Tdag = 11
-    RX = 12
-    RY = 13
-    RZ = 14
-    CRX = 15
-    CRY = 16
-    CRZ = 17
-    CCX = 18
-    GATES_END = 19
+    T = 11
+    Tdag = 12
+    RX = 13
+    RY = 14
+    RZ = 15
+    CRX = 16
+    CRY = 17
+    CRZ = 18
+    CCX = 19
+    GATES_END = 20
 
     # Registers
-    QR = 20
-    CR = 21
+    QR = 21
+    CR = 22
 
-    MEASURE = 22
+    MEASURE = 23
 
 operations = {
     'i': Operation.I,

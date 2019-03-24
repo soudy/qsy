@@ -9,7 +9,7 @@ from qsy import QuantumRegister, gates
 
 qr = QuantumRegister(2)
 qr.apply_gate(gates.H, 0)
-qr.apply_gate(gates.C(gates.X), 0, 1)
+qr.apply_gate(gates.CX, 0, 1)
 
 print(qr.to_dirac())
 ```
@@ -18,8 +18,8 @@ The output will be:
 +0.7071|00> +0.7071|11>
 ```
 
-### QsyASM
-Equivalently, the following QsyASM program does the same, and measures to a
+### qsyASM
+Equivalently, the following qsyASM program does the same, and measures to a
 classical register:
 ```asm
 qreg[2] q
