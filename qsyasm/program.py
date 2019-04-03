@@ -19,6 +19,7 @@ OPERATION_GATES = {
     Operation.CX: gates.CX,
     Operation.CY: gates.CY,
     Operation.CZ: gates.CZ,
+    Operation.CP: gates.CP,
 
     Operation.T: gates.T,
     Operation.Tdag: gates.Tdag,
@@ -43,10 +44,11 @@ class QsyASMProgram:
     def run(self):
         try:
             instructions = self.parser.parse(self.input)
-            self.eval(instructions)
-            self.dump_registers()
         except ParseError as e:
             raise QsyASMError(self._error_message(e.token, e.msg))
+
+        self.eval(instructions)
+        self.dump_registers()
 
     def eval(self, instructions):
         for instr in instructions:
@@ -59,6 +61,11 @@ class QsyASMProgram:
                     self._eval_cr(instr)
                 elif instr.type == Operation.MEASURE:
                     self._eval_measure(instr)
+                elif instr.type == Operation.ERROR:
+                    raise QsyASMError(self._error_message(
+                        instr, 'Undefined operation "{}"'.format(instr.op[0])))
+            except QsyASMError as e:
+                raise QsyASMError(e)
             except Exception as e:
                 raise QsyASMError(self._error_message(instr, e))
 
@@ -83,8 +90,8 @@ class QsyASMProgram:
         targets = [arg[1] for arg in args]
 
         if callable(gate):
-            # TODO: Parameterized gates like Rz().
-            pass
+            gate_arg = instr.op[1][0]
+            gate = gate(gate_arg)
 
         self.env.qr(register).apply_gate(gate, *targets)
 

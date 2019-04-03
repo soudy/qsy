@@ -1,4 +1,5 @@
-from .error import ParseError
+from enum import Enum
+from .error import QsyASMError
 
 class Operation:
     # Gates
@@ -14,23 +15,26 @@ class Operation:
     CX = 8
     CY = 9
     CZ = 10
+    CP = 11
 
-    T = 11
-    Tdag = 12
-    RX = 13
-    RY = 14
-    RZ = 15
-    CRX = 16
-    CRY = 17
-    CRZ = 18
-    CCX = 19
-    GATES_END = 20
+    T = 12
+    Tdag = 13
+    RX = 14
+    RY = 15
+    RZ = 16
+    CRX = 17
+    CRY = 18
+    CRZ = 19
+    CCX = 20
+    GATES_END = 21
 
     # Registers
-    QR = 21
-    CR = 22
+    QR = 22
+    CR = 23
 
-    MEASURE = 23
+    MEASURE = 24
+
+    ERROR = 25
 
 operations = {
     'i': Operation.I,
@@ -43,6 +47,7 @@ operations = {
     'sdag': Operation.Sdag,
     'cx': Operation.CX,
     'cz': Operation.CZ,
+    'cp': Operation.CP,
 
     't': Operation.T,
     'tdag': Operation.Tdag,
@@ -57,7 +62,9 @@ operations = {
     'qreg': Operation.QR,
     'creg': Operation.CR,
 
-    'meas': Operation.MEASURE
+    'meas': Operation.MEASURE,
+
+    'error': Operation.ERROR
 }
 
 class Instruction:
@@ -79,7 +86,7 @@ class Instruction:
             op_name, _ = self.op
 
         if not op_name in operations:
-            raise ParseError('Unknown instruction \'{}\''.format(op_name), self.token)
+            return Operation.ERROR
 
         return operations[op_name]
 

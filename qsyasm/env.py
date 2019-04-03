@@ -7,14 +7,14 @@ class Env:
         self.crs = {}
 
     def qr(self, name):
-        if not name in self.qrs:
-            raise QsyASMError('Undefined quantum register "{}"'.format(name))
+        if name not in self.qrs:
+            raise IndexError('Undefined quantum register "{}"'.format(name))
 
         return self.qrs[name]
 
     def cr(self, name):
-        if not name in self.crs:
-            raise QsyASMError('Undefined classical register "{}"'.format(name))
+        if name not in self.crs:
+            raise IndexError('Undefined classical register "{}"'.format(name))
 
         return self.crs[name]
 
