@@ -38,7 +38,7 @@ class QsyASMProgram:
             with open(self.filename) as f:
                 self.input = f.read()
         except FileNotFoundError as e:
-            raise QsyASMError('error reading input: {}'.format(str(e)))
+            raise QsyASMError('Error reading input: {}'.format(str(e)))
 
     def run(self):
         try:
@@ -50,22 +50,25 @@ class QsyASMProgram:
 
     def eval(self, instructions):
         for instr in instructions:
-            if instr.is_gate():
-                self._eval_gate(instr)
-            elif instr.type == Operation.QR:
-                self._eval_qr(instr)
-            elif instr.type == Operation.CR:
-                self._eval_cr(instr)
-            elif instr.type == Operation.MEASURE:
-                self._eval_measure(instr)
+            try:
+                if instr.is_gate():
+                    self._eval_gate(instr)
+                elif instr.type == Operation.QR:
+                    self._eval_qr(instr)
+                elif instr.type == Operation.CR:
+                    self._eval_cr(instr)
+                elif instr.type == Operation.MEASURE:
+                    self._eval_measure(instr)
+            except Exception as e:
+                raise QsyASMError(self._error_message(instr, e))
 
     def dump_registers(self):
         for qr_name, qr in self.env.qrs.items():
-            print('{}[{}]: {} ({})'.format(qr_name, qr.size, qr.state, qr.to_dirac()))
+            print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
             for i, state in np.ndenumerate(qr.state):
                 i = i[0]
-                print('  {:>7.5} | {:0{size}b}'.format(state, i, size=qr.size))
+                print('  {:>9.5} | {:0{size}b}'.format(state, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
             bits = ''.join([str(bit) for bit in cr.state])

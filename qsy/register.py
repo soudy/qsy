@@ -1,7 +1,17 @@
+import itertools
+
 class Register:
-    def __init__(self, size):
+    instance_counter = itertools.count()
+    prefix = 'r'
+
+    def __init__(self, size, name=None):
         self.size = size
         self.state = []
+
+        if name is None:
+            name = '{}{}'.format(self.prefix, next(self.instance_counter))
+
+        self.name = name
 
     def __len__(self):
         return self.size

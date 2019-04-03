@@ -7,16 +7,19 @@ from .register import Register
 from . import gates
 
 class QuantumRegister(Register):
-    def __init__(self, size):
-        super().__init__(size)
+    instance_counter = itertools.count()
+    prefix = 'q'
+
+    def __init__(self, size, name=None):
+        super().__init__(size, name)
         self.state_size = 2**size
         self.state = np.zeros(self.state_size)
         self.state[0] = 1 # Initialize to zero state
 
     def apply_gate(self, gate, *params):
         if len(params) != gate.arity:
-            raise Exception('Gate {} expects {} parameters'.format(gate.name,
-                gate.arity))
+            raise Exception('Gate {} expects {} parameters, got {}'.format(
+                gate.name, gate.arity, len(params)))
 
         if gate.arity == 1:
             target = params[0]
@@ -117,5 +120,6 @@ class QuantumRegister(Register):
 
     def _check_in_range(self, target):
         if target < 0 or target >= self.size:
-            raise Exception('Can\'t access qubit {}: register index out of' +
-                    'range (register size {})'.format(target, self.size))
+            raise Exception(
+                'Can\'t access {}[{}]: register index out of range (register size {})'.format(self.name, target, self.size)
+            )
