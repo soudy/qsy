@@ -33,7 +33,7 @@ meas q, c
 Running it:
 ```bash
 $ qsyasm examples/qsyasm/bell.qs
-q[2]: [0. 0. 0. 1.] (+1.0000|11>)
+q[2]: +1.0000|11>
       0.0 | 00
       0.0 | 01
       0.0 | 10
