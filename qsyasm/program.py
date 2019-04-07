@@ -96,15 +96,15 @@ class QsyASMProgram:
         self.env.qr(register).apply_gate(gate, *targets)
 
     def _eval_qr(self, instr):
-        register_size = instr.args[0][1]
+        register_size = instr.op[1]
 
-        for register_name, _ in instr.args:
+        for register_name in instr.args:
             self.env.create_qr(register_name, register_size)
 
     def _eval_cr(self, instr):
-        register_size = instr.args[0][1]
+        register_size = instr.op[1]
 
-        for register_name, _ in instr.args:
+        for register_name in instr.args:
             self.env.create_cr(register_name, register_size)
 
     def _eval_measure(self, instr):
