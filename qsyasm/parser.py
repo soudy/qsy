@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 import itertools
+import numpy as np
 
 from . import tokens
 from .instruction import Instruction
@@ -7,6 +8,14 @@ from .error import ParseError
 
 class QsyASMParser:
     tokens = tokens
+    precedence = (
+        ('left', 'PLUS', 'MIN'),
+        ('left', 'MUL', 'DIV', 'POW'),
+        ('right', 'UMIN')
+    )
+    variables = {
+        'pi': np.pi
+    }
 
     def __init__(self, **kwargs):
         self.parser = yacc.yacc(module=self, **kwargs)
@@ -45,7 +54,7 @@ class QsyASMParser:
         p[0] = (p[1], p[3])
 
     def p_param_term(self, p):
-        'param_term : IDENT LPAREN argument_list RPAREN'
+        'param_term : IDENT LPAREN expression RPAREN'
         p[0] = (p[1], p[3])
 
     def p_argument_list(self, p):
@@ -57,8 +66,52 @@ class QsyASMParser:
         p[0] = [p[1]]
         p[0] += p[3]
 
+    def p_expression_bin_op(self, p):
+        '''expression : expression PLUS expression
+                      | expression MIN expression
+                      | expression DIV expression
+                      | expression POW expression
+                      | expression MUL expression'''
+        if p[2] == '+':
+            p[0] = p[1] + p[3]
+        elif p[2] == '-':
+            p[0] = p[1] - p[3]
+        elif p[2] == '/':
+            if p[3] == 0.0:
+                raise ParseError('Division by zero'.format(p[1]), p.lexpos(1),
+                        p.lineno(1))
+            p[0] = p[1] / p[3]
+        elif p[2] == '**':
+            p[0] = p[1] ** p[3]
+        elif p[2] == '*':
+            p[0] = p[1] * p[3]
+
+    def p_expression_group(self, p):
+        'expression : LPAREN expression RPAREN'
+        p[0] = p[2]
+
+    def p_expression_integer(self, p):
+        'expression : INTEGER'
+        p[0] = p[1]
+
+    def p_expression_float(self, p):
+        'expression : FLOAT'
+        p[0] = p[1]
+
+    def p_expression_unary_min(self, p):
+        'expression : MIN expression %prec UMIN'
+        p[0] = -p[2]
+
+    def p_expression_ident(self, p):
+        'expression : IDENT'
+        if p[1] not in self.variables:
+            raise ParseError('Undefined variable "{}"'.format(p[1]), p.lexpos(1),
+                    p.lineno(1))
+
+        p[0] = self.variables[p[1]]
+
     def p_error(self, p):
-        raise ParseError('Unexpected \'{}\''.format(p.type), p)
+        raise ParseError('Unexpected "{}"'.format(p.type), p.lexpos, p.lineno)
 
     def parse(self, s):
         return self.parser.parse(s, debug=False, tracking=True)

@@ -19,13 +19,15 @@ OPERATION_GATES = {
     Operation.CX: gates.CX,
     Operation.CY: gates.CY,
     Operation.CZ: gates.CZ,
-    Operation.CP: gates.CP,
 
     Operation.T: gates.T,
     Operation.Tdag: gates.Tdag,
     Operation.RX: gates.Rx,
     Operation.RY: gates.Ry,
     Operation.RZ: gates.Rz,
+    Operation.CRX: gates.CRx,
+    Operation.CRY: gates.CRy,
+    Operation.CRZ: gates.CRz,
     Operation.CCX: gates.CCX
 }
 
@@ -45,7 +47,7 @@ class QsyASMProgram:
         try:
             instructions = self.parser.parse(self.input)
         except ParseError as e:
-            raise QsyASMError(self._error_message(e.token, e.msg))
+            raise QsyASMError(self._error_message(e.msg, e.lexpos, e.lineno))
 
         self.eval(instructions)
         self.dump_registers()
@@ -67,7 +69,9 @@ class QsyASMProgram:
             except QsyASMError as e:
                 raise QsyASMError(e)
             except Exception as e:
-                raise QsyASMError(self._error_message(instr, e))
+                raise e
+                raise QsyASMError(self._error_message(e, instr.lexpos,
+                    instr.lineno))
 
     def dump_registers(self):
         for qr_name, qr in self.env.qrs.items():
@@ -90,7 +94,7 @@ class QsyASMProgram:
         targets = [arg[1] for arg in args]
 
         if callable(gate):
-            gate_arg = instr.op[1][0]
+            gate_arg = instr.op[1]
             gate = gate(gate_arg)
 
         self.env.qr(register).apply_gate(gate, *targets)
@@ -113,7 +117,8 @@ class QsyASMProgram:
 
         if len(instr.args) == 2 and len(instr.args[0]) != len(instr.args[1]):
             raise QsyASMError(self._error_message(
-                instr, 'Mismatched register sizes in measurement'
+                'Mismatched register sizes in measurement', instr.lexpos,
+                instr.lineno
             ))
 
         if len(qtarget) == 1:
@@ -137,11 +142,10 @@ class QsyASMProgram:
 
                     if qtarget_size != ctarget_size:
                         raise QsyASMError(self._error_message(
-                            instr,
                             'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
                                 qtarget_name, qtarget_size,
                                 ctarget[0], ctarget_size
-                            )
+                            ), instr.lexpos, instr.lineno
                         ))
 
                 self.env.cr(ctarget).set_state(measured)
@@ -149,10 +153,10 @@ class QsyASMProgram:
                 register_name, register_index = ctarget
                 self.env.cr(register_name)[register_index] = measured
 
-    def _error_message(self, token, msg):
-        column = self._find_column(token)
-        return '{}:{}:{}: error: {}'.format(self.filename, token.lineno, column, msg)
+    def _error_message(self, msg, lexpos, lineno):
+        column = self._find_column(lexpos)
+        return '{}:{}:{}: error: {}'.format(self.filename, lineno, column, msg)
 
-    def _find_column(self, token):
-        line_start = self.input.rfind('\n', 0, token.lexpos) + 1
-        return (token.lexpos - line_start) + 1
+    def _find_column(self, lexpos):
+        line_start = self.input.rfind('\n', 0, lexpos) + 1
+        return (lexpos - line_start) + 1

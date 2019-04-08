@@ -26,7 +26,7 @@ class QuantumRegister(Register):
             self._apply_single_qubit_gate(gate, target)
         else:
             *controls, target = params
-            self._apply_multi_qubit_gate(gate, controls, target)
+            self._apply_controlled_qubit_gate(gate, controls, target)
 
     def measure_all(self):
         probabilities = np.abs(self.state)**2
@@ -83,7 +83,7 @@ class QuantumRegister(Register):
 
         self._transform(transformation_matrix)
 
-    def _apply_multi_qubit_gate(self, gate, controls, target):
+    def _apply_controlled_qubit_gate(self, gate, controls, target):
         self._check_in_range(target)
 
         for control in controls:

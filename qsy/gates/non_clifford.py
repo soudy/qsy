@@ -1,5 +1,5 @@
 import numpy as np
-from .gate import Gate
+from .gate import Gate, C, CC
 from .pauli import X
 
 T = Gate('T', np.array([[1, 0],
@@ -16,11 +16,16 @@ def Ry(angle):
                                 [np.sin(angle/2), np.cos(angle/2)]]), 1)
 
 def Rz(angle):
-    return Gate('Rz', np.array([[np.exp(-1j * angle/2), 0],
-                                [0, np.exp(1j * angle/2)]]), 1)
+    return Gate('Rz', np.array([[1, 0],
+                                [0, np.exp(1j * angle)]]), 1)
 
-def CC(gate):
-    """Create a controlled-controlled-U gate."""
-    return Gate('CC{}'.format(gate.name), gate.matrix, 3)
+def CRx(angle):
+    return C(Rx(angle))
+
+def CRy(angle):
+    return C(Ry(angle))
+
+def CRz(angle):
+    return C(Rz(angle))
 
 CCX = CC(X)
