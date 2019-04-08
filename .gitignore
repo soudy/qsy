@@ -56,3 +56,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# ply parser debug
+parser.out

@@ -10,7 +10,8 @@ class QsyASMParser:
     tokens = tokens
     precedence = (
         ('left', 'PLUS', 'MIN'),
-        ('left', 'MUL', 'DIV', 'POW'),
+        ('left', 'MUL', 'DIV'),
+        ('left', 'POW'),
         ('right', 'UMIN')
     )
     variables = {

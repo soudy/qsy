@@ -9,24 +9,24 @@ h q[3]
 x q[4]
 
 ; estimate phase of phi = 12(2π)/16
-crz((2**0) * (12*2*pi)/16) q[3], q[4]
-crz((2**1) * (12*2*pi)/16) q[2], q[4]
-crz((2**2) * (12*2*pi)/16) q[1], q[4]
-crz((2**3) * (12*2*pi)/16) q[0], q[4]
+crz(2**0 * (12*2*pi)/16) q[3], q[4]
+crz(2**1 * (12*2*pi)/16) q[2], q[4]
+crz(2**2 * (12*2*pi)/16) q[1], q[4]
+crz(2**3 * (12*2*pi)/16) q[0], q[4]
 
 ; inverse quantum fourier transform
 h q[0]
 
-crz(pi/2**1) q[1], q[0]
+crz(-pi/2**1) q[1], q[0]
 h q[1]
 
-crz(pi/2**1) q[2], q[0]
-crz(pi/2**2) q[2], q[1]
+crz(-pi/2**1) q[2], q[1]
+crz(-pi/2**2) q[2], q[0]
 h q[2]
 
-crz(pi/2**1) q[3], q[0]
-crz(pi/2**2) q[3], q[1]
-crz(pi/2**3) q[3], q[2]
+crz(-pi/2**1) q[3], q[2]
+crz(-pi/2**2) q[3], q[1]
+crz(-pi/2**3) q[3], q[0]
 h q[3]
 
 ; swap to get correct result from iqft
