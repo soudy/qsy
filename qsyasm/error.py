@@ -5,5 +5,6 @@ class ParseError(Exception):
         self.lexpos = lexpos
         self.lineno = lineno
 
+
 class QsyASMError(RuntimeError):
     pass

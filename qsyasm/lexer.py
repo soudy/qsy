@@ -1,6 +1,7 @@
 import ply.lex as lex
 from .error import ParseError
 
+
 class QsyASMLexer:
     tokens = (
         'INTEGER',
@@ -54,5 +55,6 @@ class QsyASMLexer:
 
     def t_error(self, t):
         raise ParseError('Unknown token \'{}\''.format(t.value[0]), t)
+
 
 lexer = QsyASMLexer()

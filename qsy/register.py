@@ -1,5 +1,6 @@
 import itertools
 
+
 class Register:
     instance_counter = itertools.count()
     prefix = 'r'

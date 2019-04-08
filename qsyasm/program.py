@@ -31,6 +31,7 @@ OPERATION_GATES = {
     Operation.CCX: gates.CCX
 }
 
+
 class QsyASMProgram:
     def __init__(self, args):
         self.filename = args['filename']
@@ -64,14 +65,15 @@ class QsyASMProgram:
                 elif instr.type == Operation.MEASURE:
                     self._eval_measure(instr)
                 elif instr.type == Operation.ERROR:
-                    raise QsyASMError(self._error_message(
-                        instr, 'Undefined operation "{}"'.format(instr.op[0])))
+                    raise QsyASMError(
+                        self._error_message(
+                            'Undefined operation "{}"'.format(instr.op[0]), instr
+                        )
+                    )
             except QsyASMError as e:
                 raise QsyASMError(e)
             except Exception as e:
-                raise e
-                raise QsyASMError(self._error_message(e, instr.lexpos,
-                    instr.lineno))
+                raise QsyASMError(self._error_message(e, instr.lexpos, instr.lineno))
 
     def dump_registers(self):
         for qr_name, qr in self.env.qrs.items():
@@ -116,10 +118,13 @@ class QsyASMProgram:
         qtarget_name = qtarget[0]
 
         if len(instr.args) == 2 and len(instr.args[0]) != len(instr.args[1]):
-            raise QsyASMError(self._error_message(
-                'Mismatched register sizes in measurement', instr.lexpos,
-                instr.lineno
-            ))
+            raise QsyASMError(
+                self._error_message(
+                    'Mismatched register sizes in measurement',
+                    instr.lexpos,
+                    instr.lineno
+                )
+            )
 
         if len(qtarget) == 1:
             # Measure all
@@ -141,12 +146,15 @@ class QsyASMProgram:
                     ctarget_size = self.env.cr(ctarget).size
 
                     if qtarget_size != ctarget_size:
-                        raise QsyASMError(self._error_message(
-                            'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
-                                qtarget_name, qtarget_size,
-                                ctarget[0], ctarget_size
-                            ), instr.lexpos, instr.lineno
-                        ))
+                        raise QsyASMError(
+                            self._error_message(
+                                'Mismatched register sizes in measurement ({}[{}] and {}[{}])'.format(
+                                    qtarget_name, qtarget_size, ctarget[0], ctarget_size
+                                ),
+                                instr.lexpos,
+                                instr.lineno
+                            )
+                        )
 
                 self.env.cr(ctarget).set_state(measured)
             elif len(ctarget) == 2:

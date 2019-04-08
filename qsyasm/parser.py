@@ -6,6 +6,7 @@ from . import tokens
 from .instruction import Instruction
 from .error import ParseError
 
+
 class QsyASMParser:
     tokens = tokens
     precedence = (
@@ -80,7 +81,7 @@ class QsyASMParser:
         elif p[2] == '/':
             if p[3] == 0.0:
                 raise ParseError('Division by zero'.format(p[1]), p.lexpos(1),
-                        p.lineno(1))
+                                 p.lineno(1))
             p[0] = p[1] / p[3]
         elif p[2] == '**':
             p[0] = p[1] ** p[3]
@@ -106,8 +107,9 @@ class QsyASMParser:
     def p_expression_ident(self, p):
         'expression : IDENT'
         if p[1] not in self.variables:
-            raise ParseError('Undefined variable "{}"'.format(p[1]), p.lexpos(1),
-                    p.lineno(1))
+            raise ParseError(
+                'Undefined variable "{}"'.format(p[1]), p.lexpos(1), p.lineno(1)
+            )
 
         p[0] = self.variables[p[1]]
 

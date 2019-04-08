@@ -6,6 +6,7 @@ import numpy.linalg as la
 from .register import Register
 from . import gates
 
+
 class QuantumRegister(Register):
     instance_counter = itertools.count()
     prefix = 'q'
@@ -14,12 +15,15 @@ class QuantumRegister(Register):
         super().__init__(size, name)
         self.state_size = 2**size
         self.state = np.zeros(self.state_size)
-        self.state[0] = 1 # Initialize to zero state
+        self.state[0] = 1  # Initialize to zero state
 
     def apply_gate(self, gate, *params):
         if len(params) != gate.arity:
-            raise Exception('Gate {} expects {} parameters, got {}'.format(
-                gate.name, gate.arity, len(params)))
+            raise Exception(
+                'Gate {} expects {} parameters, got {}'.format(
+                    gate.name, gate.arity, len(params)
+                )
+            )
 
         if gate.arity == 1:
             target = params[0]
@@ -45,10 +49,12 @@ class QuantumRegister(Register):
         n_steps = (self.state.size // step_size) // 2
 
         # Create masks to extract amplitudes where target qubit is zero and one.
-        zeros_mask = np.tile(np.concatenate((np.ones(step_size), np.zeros(step_size))),
-                             n_steps)
-        ones_mask = np.tile(np.concatenate((np.zeros(step_size), np.ones(step_size))),
-                            n_steps)
+        zeros_mask = np.tile(
+            np.concatenate((np.ones(step_size), np.zeros(step_size))), n_steps
+        )
+        ones_mask = np.tile(
+            np.concatenate((np.zeros(step_size), np.ones(step_size))), n_steps
+        )
 
         zero_amplitudes = self.state * zeros_mask
         one_amplitudes = self.state * ones_mask
@@ -70,8 +76,8 @@ class QuantumRegister(Register):
 
     def to_dirac(self):
         return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a.item(), i, n=self.size)
-                          for a, i in zip(self.state, itertools.count())
-                          if not np.isclose(a.item(), 0.0))
+                        for a, i in zip(self.state, itertools.count())
+                        if not np.isclose(a.item(), 0.0))
 
     def _apply_single_qubit_gate(self, gate, target):
         self._check_in_range(target)
@@ -121,5 +127,7 @@ class QuantumRegister(Register):
     def _check_in_range(self, target):
         if target < 0 or target >= self.size:
             raise Exception(
-                'Can\'t access {}[{}]: register index out of range (register size {})'.format(self.name, target, self.size)
+                'Can\'t access {}[{}]: register index out of range (register size {})'.format(
+                    self.name, target, self.size
+                )
             )

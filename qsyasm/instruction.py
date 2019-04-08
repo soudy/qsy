@@ -1,6 +1,7 @@
 from enum import Enum
 from .error import QsyASMError
 
+
 class Operation:
     # Gates
     GATES_START = 0
@@ -36,6 +37,7 @@ class Operation:
 
     ERROR = 25
 
+
 operations = {
     'i': Operation.I,
     'x': Operation.X,
@@ -66,6 +68,7 @@ operations = {
 
     'error': Operation.ERROR
 }
+
 
 class Instruction:
     def __init__(self, op, args, lineno, lexpos):

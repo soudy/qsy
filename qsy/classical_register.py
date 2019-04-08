@@ -1,6 +1,7 @@
 import itertools
 from .register import Register
 
+
 class ClassicalRegister(Register):
     instance_counter = itertools.count()
     prefix = 'c'

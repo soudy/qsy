@@ -3,6 +3,7 @@ import sys
 from .program import QsyASMProgram
 from .error import QsyASMError
 
+
 def main():
     argparser = argparse.ArgumentParser(description='qsyasm assembly runner.')
 
