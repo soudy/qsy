@@ -40,3 +40,5 @@ q[2]: +1.0000|11>
       1.0 | 11
 c[2]: 11
 ```
+More examples such as the Quantum Phase Estimation algorithm can be found in the
+[examples/qsyasm](examples/qsyasm) folder.
