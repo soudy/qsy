@@ -80,8 +80,7 @@ class QsyASMParser:
             p[0] = p[1] - p[3]
         elif p[2] == '/':
             if p[3] == 0.0:
-                raise ParseError('Division by zero'.format(p[1]), p.lexpos(1),
-                                 p.lineno(1))
+                raise ParseError('Division by zero', p.lexpos(2), p.lineno(2))
             p[0] = p[1] / p[3]
         elif p[2] == '**':
             p[0] = p[1] ** p[3]
