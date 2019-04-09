@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 from .error import ParseError, QsyASMError
 from .parser import QsyASMParser
@@ -35,6 +36,7 @@ OPERATION_GATES = {
 class QsyASMProgram:
     def __init__(self, args):
         self.filename = args['filename']
+        self.time = args['time']
         self.parser = QsyASMParser()
         self.env = Env()
 
@@ -46,7 +48,12 @@ class QsyASMProgram:
 
     def run(self):
         try:
+            start = time.time()
             instructions = self.parser.parse(self.input)
+            end = time.time()
+
+            if self.time:
+                print('Program execution took {:.5f} seconds'.format(end - start))
         except ParseError as e:
             raise QsyASMError(self._error_message(e.msg, e.lexpos, e.lineno))
 

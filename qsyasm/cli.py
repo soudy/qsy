@@ -5,9 +5,10 @@ from .error import QsyASMError
 
 
 def main():
-    argparser = argparse.ArgumentParser(description='qsyasm assembly runner.')
+    argparser = argparse.ArgumentParser(description='qsyasm assembly runner')
 
     argparser.add_argument('filename', type=str, help='qsyasm file to execute')
+    argparser.add_argument('-t', '--time', action='store_true', help='time program execution')
 
     args = vars(argparser.parse_args())
 
