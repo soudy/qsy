@@ -122,6 +122,7 @@ To measure a complete quantum state you can pass the whole quantum and classical
 qreg[3] q
 creg[3] c
 
+; 3 qubit GHZ state
 h q[0]
 cx q[0], q[1]
 cx q[0], q[2]
