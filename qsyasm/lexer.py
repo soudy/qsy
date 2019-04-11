@@ -54,7 +54,7 @@ class QsyASMLexer:
         return t
 
     def t_error(self, t):
-        raise ParseError('Unknown token \'{}\''.format(t.value[0]), t)
+        raise ParseError('Unknown token "{}"'.format(t.value[0]), t)
 
 
 lexer = QsyASMLexer()
