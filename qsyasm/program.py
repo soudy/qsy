@@ -86,9 +86,10 @@ class QsyASMProgram:
         for qr_name, qr in self.env.qrs.items():
             print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
-            for i, state in np.ndenumerate(qr.state):
+            for i, amplitude in np.ndenumerate(qr.state):
+                amplitude = amplitude if not np.isclose(amplitude, 0.0) else 0.0
                 i = i[0]
-                print('  {:>9.5} | {:0{size}b}'.format(state, i, size=qr.size))
+                print('  {:>9.5} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
             bits = ''.join([str(bit) for bit in cr.state])
