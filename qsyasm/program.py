@@ -98,7 +98,7 @@ class QsyASMProgram:
                 amplitude = amplitude if not np.isclose(amplitude, 0.0) else 0.0
                 amplitude = '{:9.4f}'.format(amplitude).rstrip('0').rstrip('.')
                 i = i[0]
-                print('  {} | {:0{size}b}'.format(amplitude, i, size=qr.size))
+                print('{} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
             if cr_name in self.measurement_results:

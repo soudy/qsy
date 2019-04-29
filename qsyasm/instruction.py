@@ -86,7 +86,7 @@ class Instruction:
             # parameterized instruction like qreg[n] or c(x)
             op_name, _ = self.op
 
-        if not op_name in operations:
+        if op_name not in operations:
             return Operation.ERROR
 
         return operations[op_name]
