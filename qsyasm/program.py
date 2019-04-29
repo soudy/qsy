@@ -1,5 +1,6 @@
 import numpy as np
 import time
+from collections import defaultdict
 
 from .error import ParseError, QsyASMError
 from .parser import QsyASMParser
@@ -37,6 +38,10 @@ class QsyASMProgram:
     def __init__(self, args):
         self.filename = args['filename']
         self.time = args['time']
+
+        self.shots = args['shots']
+        self.measurement_results = {}
+
         self.parser = QsyASMParser()
         self.env = Env()
 
@@ -57,7 +62,10 @@ class QsyASMProgram:
         except ParseError as e:
             raise QsyASMError(self._error_message(e.msg, e.lexpos, e.lineno))
 
-        self.eval(instructions)
+        for _ in range(self.shots):
+            self.eval(instructions)
+            self._save_measurements()
+
         self.dump_registers()
 
     def eval(self, instructions):
@@ -88,11 +96,16 @@ class QsyASMProgram:
 
             for i, amplitude in np.ndenumerate(qr.state):
                 amplitude = amplitude if not np.isclose(amplitude, 0.0) else 0.0
+                amplitude = '{:9.4f}'.format(amplitude).rstrip('0').rstrip('.')
                 i = i[0]
-                print('  {:>9.5} | {:0{size}b}'.format(amplitude, i, size=qr.size))
+                print('  {} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
-            bits = ''.join([str(bit) for bit in cr.state])
+            if cr_name in self.measurement_results:
+                bits = dict(self.measurement_results[cr_name])
+            else:
+                bits = ''.join(str(bit) for bit in cr.state)
+
             print('{}[{}]: {}'.format(cr_name, cr.size, bits))
 
     def _eval_gate(self, instr):
@@ -166,8 +179,18 @@ class QsyASMProgram:
 
                 self.env.cr(ctarget).set_state(measured)
             elif len(ctarget) == 2:
-                register_name, register_index = ctarget
-                self.env.cr(register_name)[register_index] = measured
+                ctarget, register_index = ctarget
+                self.env.cr(ctarget)[register_index] = measured
+
+        # Save measurement results when shots > 1
+        if self.shots > 1 and ctarget not in self.measurement_results:
+            self.measurement_results[ctarget] = defaultdict(int)
+
+    def _save_measurements(self):
+        for cr_name in self.measurement_results.keys():
+            cr_value = self.env.cr(cr_name).state
+            bit_string = ''.join(str(bit) for bit in cr_value)
+            self.measurement_results[cr_name][bit_string] += 1
 
     def _error_message(self, msg, lexpos, lineno):
         column = self._find_column(lexpos)

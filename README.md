@@ -26,6 +26,22 @@ The output will be:
 qsyASM is a quantum assembly language acting as front-end for qsy. It allows
 you to quickly write and debug quantum programs.
 
+
+### Usage
+```
+usage: qsyasm [-h] [-t] [-s N] filename
+
+qsyasm assembly runner
+
+positional arguments:
+  filename         qsyasm file to execute
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -t, --time       time program execution
+  -s N, --shots N  amount of shots to run
+```
+
 ### Example
 The following qsyASM program creates an entangled state and measures to a
 classical register:
@@ -39,7 +55,7 @@ cx q[0], q[1]
 meas q, c
 ```
 Running it:
-```bash
+```
 $ qsyasm examples/qsyasm/bell.qs
 q[2]: +1.0000|11>
       0.0 | 00
@@ -47,6 +63,16 @@ q[2]: +1.0000|11>
       0.0 | 10
       1.0 | 11
 c[2]: 11
+```
+Or running it a number of times:
+```
+$ qsyasm examples/qsyasm/bell.qs --shots=1024
+q[2]: +1.0000|11>
+        0.0 | 00
+        0.0 | 01
+        0.0 | 10
+        1.0 | 11
+c[2]: {'00': 543, '11': 481}
 ```
 More examples such as the Quantum Phase Estimation algorithm can be found in the
 [examples/qsyasm](examples/qsyasm) folder.
