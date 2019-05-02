@@ -138,6 +138,10 @@ adj s q[0]
 | CRz      | `crz(angle) control, target`     |
 | Toffoli  | `ccx controlA, controlB, target` |
 
+**Note**: The operations CNOT, H, S, X, Z and CZ can be efficiently simulated with
+the CHP back-end. Using any other operations with the CHP back-end will result
+in an error.
+
 #### Registers
 Defining a quantum register is done with the `qreg` operation. The instruction
 ```asm
