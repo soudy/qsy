@@ -2,6 +2,19 @@
 A quantum computer state vector simulator and quantum assembly language in
 Python.
 
+## Table of Contents
+* [qsy](#qsy-1)
+   * [Example](#example)
+* [qsyASM](#qsyasm)
+   * [Usage](#usage)
+   * [Example](#example-1)
+   * [Syntax](#syntax)
+      * [Operations](#operations)
+         * [Adjoint Operator](#adjoint-operator)
+         * [List of Operations](#list-of-operations)
+      * [Registers](#registers)
+      * [Measurement](#measurement)
+
 ## qsy
 qsy is a Python library for simulating quantum circuits.
 
@@ -25,7 +38,6 @@ The output will be:
 ## qsyASM
 qsyASM is a quantum assembly language acting as front-end for qsy. It allows
 you to quickly write and debug quantum programs.
-
 
 ### Usage
 ```
@@ -87,7 +99,7 @@ The instruction
 cx q[0], q[1]
 ```
 applies a CNOT operation with control qubit `q[0]` and target qubit `q[1]`.
-Some operations take an angle (in radian) as argument. The parameterized operation
+Some operations take an angle (in radians) as argument. The parameterized operation
 ```asm
 rz(pi/2) q[0]
 ```
@@ -95,7 +107,14 @@ rotates `q[0]` π/2 radians around the Z axis. Expressions are allowed in
 parameterized operations. Expression operators supported are `+`, `-`, `*`, `/`
 and `**` (power). The variable `pi` is available for convenience.
 
-##### List of operations
+##### Adjoint Operator
+To apply the adjoint of a gate, the `adj` keyword is available. For example, to
+apply the adjoint of S (S dagger):
+```asm
+adj s q[0]
+```
+
+##### List of Operations
 | Gate     |  qsyASM operation                |
 |----------|----------------------------------|
 | Pauli I  | `i target`                       |
@@ -104,9 +123,7 @@ and `**` (power). The variable `pi` is available for convenience.
 | Pauli Z  | `z target`                       |
 | Hadamard | `h target`                       |
 | S        | `s target`                       |
-| Sdag     | `sdag target`                    |
 | T        | `t target`                       |
-| Tdag     | `tdag target`                    |
 | Rx       | `rx(angle) target`               |
 | Ry       | `ry(angle) target`               |
 | Rz       | `rz(angle) target`               |

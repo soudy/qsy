@@ -17,10 +17,14 @@ class QsyASMLexer:
         'DIV',
         'POW',
         'MUL',
-        'NEWLINE'
+        'NEWLINE',
+        'ADJ'
     )
 
-    t_IDENT = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    reserved = {
+        'adj': 'ADJ'
+    }
+
     t_COMMA = r','
     t_LBRACKET = r'\['
     t_RBRACKET = r'\]'
@@ -37,6 +41,11 @@ class QsyASMLexer:
 
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
+
+    def t_IDENT(self, t):
+        r'[a-zA-Z_][a-zA-Z0-9_]*'
+        t.type = self.reserved.get(t.value, 'IDENT')
+        return t
 
     def t_INTEGER(self, t):
         r'\d+'

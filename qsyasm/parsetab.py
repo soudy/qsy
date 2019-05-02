@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINleftMULDIVleftPOWrightUMINCOMMA DIV FLOAT IDENT INTEGER LBRACKET LPAREN MIN MUL NEWLINE PLUS POW RBRACKET RPARENprogram : program instruction\n                   | instructioninstruction : term argument_list\n                       | param_term argument_listinstruction : NEWLINEterm : IDENT\n                | INTEGER\n                | lookuplookup : IDENT LBRACKET INTEGER RBRACKETparam_term : IDENT LPAREN expression RPARENargument_list : termargument_list : term COMMA argument_listexpression : expression PLUS expression\n                      | expression MIN expression\n                      | expression DIV expression\n                      | expression POW expression\n                      | expression MUL expressionexpression : LPAREN expression RPARENexpression : INTEGERexpression : FLOATexpression : MIN expression %prec UMINexpression : IDENT'
+_lr_signature = 'leftPLUSMINleftMULDIVleftPOWrightUMINADJ COMMA DIV FLOAT IDENT INTEGER LBRACKET LPAREN MIN MUL NEWLINE PLUS POW RBRACKET RPARENprogram : program instruction\n                   | instructioninstruction : normal_instruction\n                       | adjoint_instructionnormal_instruction : term argument_list\n                              | param_term argument_listadjoint_instruction : ADJ normal_instructioninstruction : NEWLINEterm : IDENT\n                | INTEGER\n                | lookuplookup : IDENT LBRACKET INTEGER RBRACKETparam_term : IDENT LPAREN expression RPARENargument_list : termargument_list : term COMMA argument_listexpression : expression PLUS expression\n                      | expression MIN expression\n                      | expression DIV expression\n                      | expression POW expression\n                      | expression MUL expressionexpression : LPAREN expression RPARENexpression : INTEGERexpression : FLOATexpression : MIN expression %prec UMINexpression : IDENT'
     
-_lr_action_items = {'NEWLINE':([0,1,2,5,7,8,9,10,11,12,13,24,33,],[5,5,-2,-5,-7,-8,-1,-11,-3,-6,-4,-12,-9,]),'IDENT':([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,18,20,24,26,27,28,29,30,31,33,],[6,6,-2,12,12,-5,-6,-7,-8,-1,-11,-3,-6,-4,17,12,17,17,-12,-10,17,17,17,17,17,-9,]),'INTEGER':([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,18,20,24,26,27,28,29,30,31,33,],[7,7,-2,7,7,-5,-6,-7,-8,-1,-11,-3,-6,-4,21,23,7,21,21,-12,-10,21,21,21,21,21,-9,]),'$end':([1,2,5,7,8,9,10,11,12,13,24,33,],[0,-2,-5,-7,-8,-1,-11,-3,-6,-4,-12,-9,]),'LPAREN':([6,14,18,20,27,28,29,30,31,],[14,18,18,18,18,18,18,18,18,]),'LBRACKET':([6,12,],[15,15,]),'COMMA':([7,8,10,12,33,],[-7,-8,16,-6,-9,]),'FLOAT':([14,18,20,27,28,29,30,31,],[22,22,22,22,22,22,22,22,]),'MIN':([14,17,18,19,20,21,22,25,27,28,29,30,31,32,34,35,36,37,38,39,],[20,-22,20,28,20,-19,-20,28,20,20,20,20,20,-21,-18,-13,-14,-15,-16,-17,]),'RPAREN':([17,19,21,22,25,32,34,35,36,37,38,39,],[-22,26,-19,-20,34,-21,-18,-13,-14,-15,-16,-17,]),'PLUS':([17,19,21,22,25,32,34,35,36,37,38,39,],[-22,27,-19,-20,27,-21,-18,-13,-14,-15,-16,-17,]),'DIV':([17,19,21,22,25,32,34,35,36,37,38,39,],[-22,29,-19,-20,29,-21,-18,29,29,-15,-16,-17,]),'POW':([17,19,21,22,25,32,34,35,36,37,38,39,],[-22,30,-19,-20,30,-21,-18,30,30,30,-16,30,]),'MUL':([17,19,21,22,25,32,34,35,36,37,38,39,],[-22,31,-19,-20,31,-21,-18,31,31,-15,-16,-17,]),'RBRACKET':([23,],[33,]),}
+_lr_action_items = {'NEWLINE':([0,1,2,3,4,5,10,11,12,13,14,15,16,17,28,37,],[5,5,-2,-3,-4,-8,-10,-11,-1,-14,-5,-9,-6,-7,-15,-12,]),'ADJ':([0,1,2,3,4,5,10,11,12,13,14,15,16,17,28,37,],[8,8,-2,-3,-4,-8,-10,-11,-1,-14,-5,-9,-6,-7,-15,-12,]),'IDENT':([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,22,24,28,30,31,32,33,34,35,37,],[9,9,-2,-3,-4,-8,15,15,9,-9,-10,-11,-1,-14,-5,-9,-6,-7,21,15,21,21,-15,-13,21,21,21,21,21,-12,]),'INTEGER':([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,30,31,32,33,34,35,37,],[10,10,-2,-3,-4,-8,10,10,10,-9,-10,-11,-1,-14,-5,-9,-6,-7,25,27,10,25,25,-15,-13,25,25,25,25,25,-12,]),'$end':([1,2,3,4,5,10,11,12,13,14,15,16,17,28,37,],[0,-2,-3,-4,-8,-10,-11,-1,-14,-5,-9,-6,-7,-15,-12,]),'LPAREN':([9,18,22,24,31,32,33,34,35,],[18,22,22,22,22,22,22,22,22,]),'LBRACKET':([9,15,],[19,19,]),'COMMA':([10,11,13,15,37,],[-10,-11,20,-9,-12,]),'FLOAT':([18,22,24,31,32,33,34,35,],[26,26,26,26,26,26,26,26,]),'MIN':([18,21,22,23,24,25,26,29,31,32,33,34,35,36,38,39,40,41,42,43,],[24,-25,24,32,24,-22,-23,32,24,24,24,24,24,-24,-21,-16,-17,-18,-19,-20,]),'RPAREN':([21,23,25,26,29,36,38,39,40,41,42,43,],[-25,30,-22,-23,38,-24,-21,-16,-17,-18,-19,-20,]),'PLUS':([21,23,25,26,29,36,38,39,40,41,42,43,],[-25,31,-22,-23,31,-24,-21,-16,-17,-18,-19,-20,]),'DIV':([21,23,25,26,29,36,38,39,40,41,42,43,],[-25,33,-22,-23,33,-24,-21,33,33,-18,-19,-20,]),'POW':([21,23,25,26,29,36,38,39,40,41,42,43,],[-25,34,-22,-23,34,-24,-21,34,34,34,-19,34,]),'MUL':([21,23,25,26,29,36,38,39,40,41,42,43,],[-25,35,-22,-23,35,-24,-21,35,35,-18,-19,-20,]),'RBRACKET':([27,],[37,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'instruction':([0,1,],[2,9,]),'term':([0,1,3,4,16,],[3,3,10,10,10,]),'param_term':([0,1,],[4,4,]),'lookup':([0,1,3,4,16,],[8,8,8,8,8,]),'argument_list':([3,4,16,],[11,13,24,]),'expression':([14,18,20,27,28,29,30,31,],[19,25,32,35,36,37,38,39,]),}
+_lr_goto_items = {'program':([0,],[1,]),'instruction':([0,1,],[2,12,]),'normal_instruction':([0,1,8,],[3,3,17,]),'adjoint_instruction':([0,1,],[4,4,]),'term':([0,1,6,7,8,20,],[6,6,13,13,6,13,]),'param_term':([0,1,8,],[7,7,7,]),'lookup':([0,1,6,7,8,20,],[11,11,11,11,11,11,]),'argument_list':([6,7,20,],[14,16,28,]),'expression':([18,22,24,31,32,33,34,35,],[23,29,36,39,40,41,42,43,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,26 +27,29 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> program instruction','program',2,'p_program','parser.py',25),
-  ('program -> instruction','program',1,'p_program','parser.py',26),
-  ('instruction -> term argument_list','instruction',2,'p_instruction','parser.py',39),
-  ('instruction -> param_term argument_list','instruction',2,'p_instruction','parser.py',40),
-  ('instruction -> NEWLINE','instruction',1,'p_instruction_newline','parser.py',44),
-  ('term -> IDENT','term',1,'p_term','parser.py',48),
-  ('term -> INTEGER','term',1,'p_term','parser.py',49),
-  ('term -> lookup','term',1,'p_term','parser.py',50),
-  ('lookup -> IDENT LBRACKET INTEGER RBRACKET','lookup',4,'p_lookup','parser.py',54),
-  ('param_term -> IDENT LPAREN expression RPAREN','param_term',4,'p_param_term','parser.py',58),
-  ('argument_list -> term','argument_list',1,'p_argument_list','parser.py',62),
-  ('argument_list -> term COMMA argument_list','argument_list',3,'p_argument_list_args','parser.py',66),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_bin_op','parser.py',71),
-  ('expression -> expression MIN expression','expression',3,'p_expression_bin_op','parser.py',72),
-  ('expression -> expression DIV expression','expression',3,'p_expression_bin_op','parser.py',73),
-  ('expression -> expression POW expression','expression',3,'p_expression_bin_op','parser.py',74),
-  ('expression -> expression MUL expression','expression',3,'p_expression_bin_op','parser.py',75),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',91),
-  ('expression -> INTEGER','expression',1,'p_expression_integer','parser.py',95),
-  ('expression -> FLOAT','expression',1,'p_expression_float','parser.py',99),
-  ('expression -> MIN expression','expression',2,'p_expression_unary_min','parser.py',103),
-  ('expression -> IDENT','expression',1,'p_expression_ident','parser.py',107),
+  ('program -> program instruction','program',2,'p_program','parser.py',26),
+  ('program -> instruction','program',1,'p_program','parser.py',27),
+  ('instruction -> normal_instruction','instruction',1,'p_instruction','parser.py',40),
+  ('instruction -> adjoint_instruction','instruction',1,'p_instruction','parser.py',41),
+  ('normal_instruction -> term argument_list','normal_instruction',2,'p_normal_instruction','parser.py',45),
+  ('normal_instruction -> param_term argument_list','normal_instruction',2,'p_normal_instruction','parser.py',46),
+  ('adjoint_instruction -> ADJ normal_instruction','adjoint_instruction',2,'p_adjoint_instruction','parser.py',50),
+  ('instruction -> NEWLINE','instruction',1,'p_instruction_newline','parser.py',54),
+  ('term -> IDENT','term',1,'p_term','parser.py',58),
+  ('term -> INTEGER','term',1,'p_term','parser.py',59),
+  ('term -> lookup','term',1,'p_term','parser.py',60),
+  ('lookup -> IDENT LBRACKET INTEGER RBRACKET','lookup',4,'p_lookup','parser.py',64),
+  ('param_term -> IDENT LPAREN expression RPAREN','param_term',4,'p_param_term','parser.py',68),
+  ('argument_list -> term','argument_list',1,'p_argument_list','parser.py',72),
+  ('argument_list -> term COMMA argument_list','argument_list',3,'p_argument_list_args','parser.py',76),
+  ('expression -> expression PLUS expression','expression',3,'p_expression_bin_op','parser.py',81),
+  ('expression -> expression MIN expression','expression',3,'p_expression_bin_op','parser.py',82),
+  ('expression -> expression DIV expression','expression',3,'p_expression_bin_op','parser.py',83),
+  ('expression -> expression POW expression','expression',3,'p_expression_bin_op','parser.py',84),
+  ('expression -> expression MUL expression','expression',3,'p_expression_bin_op','parser.py',85),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',100),
+  ('expression -> INTEGER','expression',1,'p_expression_integer','parser.py',104),
+  ('expression -> FLOAT','expression',1,'p_expression_float','parser.py',108),
+  ('expression -> MIN expression','expression',2,'p_expression_unary_min','parser.py',112),
+  ('expression -> IDENT','expression',1,'p_expression_ident','parser.py',116),
 ]

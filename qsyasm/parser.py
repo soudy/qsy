@@ -37,9 +37,25 @@ class QsyASMParser:
                 p[0] += [p[2]]
 
     def p_instruction(self, p):
-        '''instruction : term argument_list
-                       | param_term argument_list'''
+        '''instruction : normal_instruction
+                       | adjoint_instruction'''
+        p[0] = p[1]
+
+    def p_normal_instruction(self, p):
+        '''normal_instruction : term argument_list
+                              | param_term argument_list'''
         p[0] = Instruction(p[1], p[2], p.lineno(0), p.lexpos(0))
+
+    def p_adjoint_instruction(self, p):
+        'adjoint_instruction : ADJ normal_instruction'
+        instr = p[2]
+
+        if not instr.is_gate():
+            raise ParseError('Invalid operation "{}" for adjoint'.format(instr.op_name),
+                             p.lexpos(2), p.lineno(2))
+
+        instr.toggle_adjoint()
+        p[0] = instr
 
     def p_instruction_newline(self, p):
         'instruction : NEWLINE'

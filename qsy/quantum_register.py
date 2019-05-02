@@ -17,7 +17,7 @@ class QuantumRegister(Register):
         self.state = np.zeros(self.state_size)
         self.state[0] = 1  # Initialize to zero state
 
-    def apply_gate(self, gate, *params):
+    def apply_gate(self, gate, *params, adjoint=False):
         if len(params) != gate.arity:
             raise Exception(
                 'Gate {} expects {} parameters, got {}'.format(
@@ -27,10 +27,10 @@ class QuantumRegister(Register):
 
         if gate.arity == 1:
             target = params[0]
-            self._apply_single_qubit_gate(gate, target)
+            self._apply_single_qubit_gate(gate, target, adjoint)
         else:
             *controls, target = params
-            self._apply_controlled_gate(gate, controls, target)
+            self._apply_controlled_gate(gate, controls, target, adjoint)
 
     def measure_all(self):
         probabilities = np.abs(self.state)**2
@@ -79,22 +79,25 @@ class QuantumRegister(Register):
                         for a, i in zip(self.state, itertools.count())
                         if not np.isclose(a.item(), 0.0))
 
-    def _apply_single_qubit_gate(self, gate, target):
+    def _apply_single_qubit_gate(self, gate, target, adjoint):
         self._check_in_range(target)
 
+        operation = gate.adjoint_matrix if adjoint else gate.matrix
+
         transformation = [gates.I.matrix] * self.size
-        transformation[target] = gate.matrix
+        transformation[target] = operation
 
         transformation_matrix = functools.reduce(np.kron, transformation)
 
         self._transform(transformation_matrix)
 
-    def _apply_controlled_gate(self, gate, controls, target):
+    def _apply_controlled_gate(self, gate, controls, target, adjoint):
         self._check_in_range(target)
 
         for control in controls:
             self._check_in_range(control)
 
+        operation = gate.adjoint_matrix if adjoint else gate.matrix
         control_matrix = np.array([[float('nan'), 0],
                                    [0, 1]])
         transformation = []
@@ -103,7 +106,7 @@ class QuantumRegister(Register):
             if i in controls:
                 transformation.append(control_matrix)
             elif i == target:
-                transformation.append(gate.matrix)
+                transformation.append(operation)
             else:
                 transformation.append(gates.I.matrix)
 

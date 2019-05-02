@@ -2,25 +2,27 @@ import numpy as np
 from .gate import Gate, C, CC
 from .pauli import X
 
-T = Gate('T', np.array([[1, 0],
-                        [0, np.exp(1j * np.pi / 4)]]), 1)
+T_MATRIX = np.array([[1, 0],
+                     [0, np.exp(1j * np.pi / 4)]])
 
-Tdag = Gate('Tdag', T.matrix.conjugate().transpose(), 1)
-
+T = Gate('T', T_MATRIX, T_MATRIX.conj().T, 1)
 
 def Rx(angle):
-    return Gate('Rx', np.array([[np.cos(angle/2), -1j * np.sin(angle/2)],
-                                [-1j * np.sin(angle/2), np.cos(angle/2)]]), 1)
+    matrix = np.array([[np.cos(angle/2), -1j * np.sin(angle/2)],
+                       [-1j * np.sin(angle/2), np.cos(angle/2)]])
+    return Gate('Rx', matrix, matrix.conj().T, 1)
 
 
 def Ry(angle):
-    return Gate('Ry', np.array([[np.cos(angle/2), -np.sin(angle/2)],
-                                [np.sin(angle/2), np.cos(angle/2)]]), 1)
+    matrix = np.array([[np.cos(angle/2), -np.sin(angle/2)],
+                       [np.sin(angle/2), np.cos(angle/2)]])
+    return Gate('Ry', matrix, matrix.conj().T, 1)
 
 
 def Rz(angle):
-    return Gate('Rz', np.array([[1, 0],
-                                [0, np.exp(1j * angle)]]), 1)
+    matrix = np.array([[1, 0],
+                       [0, np.exp(1j * angle)]])
+    return Gate('Rz', matrix, matrix.conj().T, 1)
 
 
 def CRx(angle):

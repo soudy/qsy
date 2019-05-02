@@ -17,13 +17,11 @@ OPERATION_GATES = {
 
     Operation.H: gates.H,
     Operation.S: gates.S,
-    Operation.Sdag: gates.Sdag,
     Operation.CX: gates.CX,
     Operation.CY: gates.CY,
     Operation.CZ: gates.CZ,
 
     Operation.T: gates.T,
-    Operation.Tdag: gates.Tdag,
     Operation.RX: gates.Rx,
     Operation.RY: gates.Ry,
     Operation.RZ: gates.Rz,
@@ -120,7 +118,7 @@ class QsyASMProgram:
             gate_arg = instr.op[1]
             gate = gate(gate_arg)
 
-        self.env.qr(register).apply_gate(gate, *targets)
+        self.env.qr(register).apply_gate(gate, *targets, adjoint=instr.adjoint)
 
     def _eval_qr(self, instr):
         register_size = instr.op[1]

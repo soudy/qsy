@@ -12,29 +12,27 @@ class Operation:
 
     H = 5
     S = 6
-    Sdag = 7
-    CX = 8
-    CY = 9
-    CZ = 10
+    CX = 7
+    CY = 8
+    CZ = 9
 
-    T = 11
-    Tdag = 12
-    RX = 13
-    RY = 14
-    RZ = 15
-    CRX = 16
-    CRY = 17
-    CRZ = 18
-    CCX = 19
-    GATES_END = 20
+    T = 10
+    RX = 11
+    RY = 12
+    RZ = 13
+    CRX = 14
+    CRY = 15
+    CRZ = 16
+    CCX = 17
+    GATES_END = 18
 
     # Registers
-    QR = 21
-    CR = 22
+    QR = 19
+    CR = 20
 
-    MEASURE = 24
+    MEASURE = 21
 
-    ERROR = 25
+    ERROR = 22
 
 
 operations = {
@@ -45,12 +43,10 @@ operations = {
 
     'h': Operation.H,
     's': Operation.S,
-    'sdag': Operation.Sdag,
     'cx': Operation.CX,
     'cz': Operation.CZ,
 
     't': Operation.T,
-    'tdag': Operation.Tdag,
     'rx': Operation.RX,
     'ry': Operation.RY,
     'rz': Operation.RZ,
@@ -71,25 +67,33 @@ operations = {
 class Instruction:
     def __init__(self, op, args, lineno, lexpos):
         self.op = op
+        self.op_name = op
         self.args = args
         self.lineno = lineno
         self.lexpos = lexpos
+
         self.type = self._get_op_type()
+
+        # only applicable for gates
+        self.adjoint = False
 
     def is_gate(self):
         return self.type > Operation.GATES_START and self.type < Operation.GATES_END
 
+    def toggle_adjoint(self):
+        self.adjoint = not self.adjoint
+
     def _get_op_type(self):
-        op_name = self.op
+        self.op_name = self.op
 
         if isinstance(self.op, tuple):
             # parameterized instruction like qreg[n] or c(x)
-            op_name, _ = self.op
+            self.op_name, _ = self.op
 
-        if op_name not in operations:
+        if self.op_name not in operations:
             return Operation.ERROR
 
-        return operations[op_name]
+        return operations[self.op_name]
 
     def __repr__(self):
         return '{}<{} {}>'.format(self.__class__.__name__, self.op, self.args)
