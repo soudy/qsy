@@ -7,6 +7,7 @@ T_MATRIX = np.array([[1, 0],
 
 T = Gate('T', T_MATRIX, T_MATRIX.conj().T, 1)
 
+
 def Rx(angle):
     matrix = np.array([[np.cos(angle/2), -1j * np.sin(angle/2)],
                        [-1j * np.sin(angle/2), np.cos(angle/2)]])

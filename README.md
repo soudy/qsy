@@ -10,7 +10,7 @@ Python.
    * [Example](#example-1)
    * [Syntax](#syntax)
       * [Operations](#operations)
-         * [Adjoint Operator](#adjoint-operator)
+         * [Adjoint Operation](#adjoint-operation)
          * [List of Operations](#list-of-operations)
       * [Registers](#registers)
       * [Measurement](#measurement)
@@ -107,7 +107,7 @@ rotates `q[0]` π/2 radians around the Z axis. Expressions are allowed in
 parameterized operations. Expression operators supported are `+`, `-`, `*`, `/`
 and `**` (power). The variable `pi` is available for convenience.
 
-##### Adjoint Operator
+##### Adjoint Operation
 To apply the adjoint of a gate, the `adj` keyword is available. For example, to
 apply the adjoint of S (S dagger):
 ```asm

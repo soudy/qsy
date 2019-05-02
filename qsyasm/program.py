@@ -80,7 +80,8 @@ class QsyASMProgram:
                 elif instr.type == Operation.ERROR:
                     raise QsyASMError(
                         self._error_message(
-                            'Undefined operation "{}"'.format(instr.op[0]), instr
+                            'Undefined operation "{}"'.format(instr.op[0]),
+                            instr
                         )
                     )
             except QsyASMError as e:

@@ -1,6 +1,8 @@
 import collections
 
-Gate = collections.namedtuple('Gate', ['name', 'matrix', 'adjoint_matrix', 'arity'])
+Gate = collections.namedtuple(
+    'Gate', ['name', 'matrix', 'adjoint_matrix', 'arity']
+)
 
 
 def C(gate):

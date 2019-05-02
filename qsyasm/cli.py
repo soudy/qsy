@@ -8,8 +8,10 @@ def main():
     argparser = argparse.ArgumentParser(description='qsyasm assembly runner')
 
     argparser.add_argument('filename', type=str, help='qsyasm file to execute')
-    argparser.add_argument('-t', '--time', action='store_true', help='time program execution')
-    argparser.add_argument('-s', '--shots', type=int, default=1, help='amount of shots to run', metavar='N')
+    argparser.add_argument('-t', '--time', action='store_true',
+                           help='time program execution')
+    argparser.add_argument('-s', '--shots', type=int,
+                           default=1, help='amount of shots to run', metavar='N')
 
     args = vars(argparser.parse_args())
 

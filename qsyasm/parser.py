@@ -123,7 +123,8 @@ class QsyASMParser:
         'expression : IDENT'
         if p[1] not in self.variables:
             raise ParseError(
-                'Undefined variable "{}"'.format(p[1]), p.lexpos(1), p.lineno(1)
+                'Undefined variable "{}"'.format(p[1]),
+                p.lexpos(1), p.lineno(1)
             )
 
         p[0] = self.variables[p[1]]
