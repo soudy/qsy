@@ -37,21 +37,25 @@ The output will be:
 
 ## qsyASM
 qsyASM is a quantum assembly language acting as front-end for qsy. It allows
-you to quickly write and debug quantum programs.
+you to quickly write and debug quantum programs. It also allows for efficient
+simulation of stabilizer circuits (a quantum circuit consisting solely of CNOT,
+Hadamard, and phase gates) using the `chp` back-end.
 
 ### Usage
 ```
-usage: qsyasm [-h] [-t] [-s N] filename
+usage: qsyasm [-h] [-t] [-s N] [-b B] filename
 
 qsyasm assembly runner
 
 positional arguments:
-  filename         qsyasm file to execute
+  filename           qsyasm file to execute
 
 optional arguments:
-  -h, --help       show this help message and exit
-  -t, --time       time program execution
-  -s N, --shots N  amount of shots to run
+  -h, --help         show this help message and exit
+  -t, --time         time program execution
+  -s N, --shots N    amount of shots to run
+  -b B, --backend B  simulator back-end to use: chp or statevector (default:
+                     statevector)
 ```
 
 ### Example

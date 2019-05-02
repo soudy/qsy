@@ -7,7 +7,6 @@ class Register:
 
     def __init__(self, size, name=None):
         self.size = size
-        self.state = []
 
         if name is None:
             name = '{}{}'.format(self.prefix, next(self.instance_counter))

@@ -19,8 +19,8 @@ class Env:
 
         return self.crs[name]
 
-    def create_qr(self, name, size):
-        self.qrs[name] = QuantumRegister(size, name)
+    def create_qr(self, name, size, backend):
+        self.qrs[name] = QuantumRegister(size, name, backend=backend)
 
     def create_cr(self, name, size):
         self.crs[name] = ClassicalRegister(size, name)

@@ -12,6 +12,9 @@ def main():
                            help='time program execution')
     argparser.add_argument('-s', '--shots', type=int,
                            default=1, help='amount of shots to run', metavar='N')
+    argparser.add_argument('-b', '--backend', choices=('chp', 'statevector'),
+                           default=None, metavar='B',
+                           help='simulator back-end to use: chp or statevector (default: statevector)')
 
     args = vars(argparser.parse_args())
 

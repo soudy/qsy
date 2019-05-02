@@ -8,6 +8,7 @@ from .instruction import Operation
 from .env import Env
 
 from qsy import gates
+from qsy.backends import StatevectorBackend, CHPBackend
 
 OPERATION_GATES = {
     Operation.I: gates.I,
@@ -40,6 +41,12 @@ class QsyASMProgram:
         self.shots = args['shots']
         self.measurement_results = {}
 
+        self.backend_arg = args['backend']
+        if self.backend_arg == 'chp':
+            self.backend = CHPBackend
+        else:
+            self.backend = StatevectorBackend
+
         self.parser = QsyASMParser()
         self.env = Env()
 
@@ -50,21 +57,28 @@ class QsyASMProgram:
             raise QsyASMError('Error reading input: {}'.format(str(e)))
 
     def run(self):
-        try:
-            start = time.time()
-            instructions = self.parser.parse(self.input)
-            end = time.time()
+        start = time.time()
 
-            if self.time:
-                print('Program execution took {:.5f} seconds'.format(end - start))
+        try:
+            instructions = self.parser.parse(self.input)
         except ParseError as e:
             raise QsyASMError(self._error_message(e.msg, e.lexpos, e.lineno))
+
+        # TODO: make CHP back-end states printable
+        #  if self._can_use_chp(instructions) and self.backend_arg is None:
+        #      print('Stabilizer circuit detected, using CHP back-end')
+        #      self.backend = CHPBackend
 
         for _ in range(self.shots):
             self.eval(instructions)
             self._save_measurements()
 
+        end = time.time()
+
         self.dump_registers()
+
+        if self.time:
+            print('Program execution took {:.5f} seconds'.format(end - start))
 
     def eval(self, instructions):
         for instr in instructions:
@@ -91,6 +105,10 @@ class QsyASMProgram:
 
     def dump_registers(self):
         for qr_name, qr in self.env.qrs.items():
+            if qr.size > 31:
+                print('Register too big to print')
+                continue
+
             print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
             for i, amplitude in np.ndenumerate(qr.state):
@@ -125,7 +143,7 @@ class QsyASMProgram:
         register_size = instr.op[1]
 
         for register_name in instr.args:
-            self.env.create_qr(register_name, register_size)
+            self.env.create_qr(register_name, register_size, self.backend)
 
     def _eval_cr(self, instr):
         register_size = instr.op[1]
@@ -190,6 +208,19 @@ class QsyASMProgram:
             cr_value = self.env.cr(cr_name).state
             bit_string = ''.join(str(bit) for bit in cr_value)
             self.measurement_results[cr_name][bit_string] += 1
+
+    def _can_use_chp(self, instructions):
+        '''
+        Determine if a program is a stabilizer circuit and can use the CHP
+        back-end.
+        '''
+        for instr in instructions:
+            if instr.is_gate():
+                gate = OPERATION_GATES[instr.type]
+                if gate not in CHPBackend.SUPPORTED_GATES:
+                    return False
+
+        return True
 
     def _error_message(self, msg, lexpos, lineno):
         column = self._find_column(lexpos)
