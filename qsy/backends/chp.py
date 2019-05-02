@@ -11,6 +11,7 @@ class CHPBackend(Backend):
     described in a paper by Scott Aaronson and Daniel Gottesman found at
     https://arxiv.org/abs/quant-ph/0406196.
     '''
+
     SUPPORTED_GATES = [gates.CX, gates.H, gates.S, gates.X, gates.Z, gates.CZ]
 
     def __init__(self, size, name):
@@ -19,19 +20,23 @@ class CHPBackend(Backend):
 
         # X generators
         self.x = np.concatenate(
-            (np.eye(self.size, dtype=int), np.zeros((self.size, self.size), dtype=int)),
+            (np.eye(self.size, dtype=int),
+             np.zeros((self.size, self.size), dtype=int)),
             axis=0
         )
         # scratch space
-        self.x = np.concatenate((self.x, np.zeros((1, self.size), dtype=int)), axis=0)
+        self.x = np.concatenate(
+            (self.x, np.zeros((1, self.size), dtype=int)), axis=0)
 
         # Z generators
         self.z = np.concatenate(
-            (np.zeros((self.size, self.size), dtype=int), np.eye(self.size, dtype=int)),
+            (np.zeros((self.size, self.size), dtype=int),
+             np.eye(self.size, dtype=int)),
             axis=0
         )
         # scratch space
-        self.z = np.concatenate((self.z, np.zeros((1, self.size), dtype=int)), axis=0)
+        self.z = np.concatenate(
+            (self.z, np.zeros((1, self.size), dtype=int)), axis=0)
 
         # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
         self.r = np.zeros((2*self.size + 1, 1), dtype=int)
@@ -104,12 +109,9 @@ class CHPBackend(Backend):
     @property
     def state(self):
         '''Convert state tableau to state vector for consistent visualizing'''
-        statevector = np.zeros(self.size**2)
-        statevector[0] = 1
-
         # TODO: make CHP state printable/readable
 
-        return statevector
+        return []
 
     def _h(self, target):
         for i in range(2*self.size):
@@ -167,5 +169,3 @@ class CHPBackend(Backend):
         for j in range(self.size):
             self.x[h][j] ^= self.x[i][j]
             self.z[h][j] ^= self.z[i][j]
-
-
