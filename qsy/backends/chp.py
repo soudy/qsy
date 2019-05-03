@@ -48,8 +48,13 @@ class CHPBackend(Backend):
 
         if gate.arity == 1:
             target = params[0]
+
+            self._check_in_range(target)
         else:
             control, target = params
+
+            self._check_in_range(control)
+            self._check_in_range(target)
 
         if gate == gates.CX:
             self._cnot(control, target)
