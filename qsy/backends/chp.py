@@ -21,22 +21,20 @@ class CHPBackend(Backend):
         # X generators
         self.x = np.concatenate(
             (np.eye(self.size, dtype=int),
-             np.zeros((self.size, self.size), dtype=int)),
+             np.zeros((self.size, self.size), dtype=int),
+             # scratch space
+             np.zeros((1, self.size), dtype=int)),
             axis=0
         )
-        # scratch space
-        self.x = np.concatenate(
-            (self.x, np.zeros((1, self.size), dtype=int)), axis=0)
 
         # Z generators
         self.z = np.concatenate(
             (np.zeros((self.size, self.size), dtype=int),
-             np.eye(self.size, dtype=int)),
+             np.eye(self.size, dtype=int),
+             # scratch space
+             np.zeros((1, self.size), dtype=int)),
             axis=0
         )
-        # scratch space
-        self.z = np.concatenate(
-            (self.z, np.zeros((1, self.size), dtype=int)), axis=0)
 
         # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
         self.r = np.zeros((2*self.size + 1, 1), dtype=int)
