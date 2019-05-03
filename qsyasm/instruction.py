@@ -96,4 +96,4 @@ class Instruction:
         return operations[self.op_name]
 
     def __repr__(self):
-        return '{}<{} {}>'.format(self.__class__.__name__, self.op, self.args)
+        return '{}<{} {}>'.format(self.__name__, self.op, self.args)

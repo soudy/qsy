@@ -43,7 +43,7 @@ Hadamard, and phase gates) using the `chp` back-end.
 
 ### Usage
 ```
-usage: qsyasm [-h] [-t] [-s N] [-b B] filename
+usage: qsyasm [-h] [-v] [-t] [-s N] [-b B] filename
 
 qsyasm assembly runner
 
@@ -52,6 +52,7 @@ positional arguments:
 
 optional arguments:
   -h, --help         show this help message and exit
+  -v, --verbose      verbose output
   -t, --time         time program execution
   -s N, --shots N    amount of shots to run
   -b B, --backend B  simulator back-end to use: chp or statevector (default:
