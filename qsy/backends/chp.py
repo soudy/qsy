@@ -114,12 +114,13 @@ class CHPBackend(Backend):
     def measure_all(self):
         return [self.measure(i) for i in range(self.size)]
 
-    @property
-    def state(self):
-        '''Convert state tableau to state vector for consistent visualizing'''
+    def yield_state(self):
         # TODO: make CHP state printable/readable
+        yield from []
 
-        return []
+    def to_dirac(self):
+        # TODO: make CHP state printable/readable
+        return ''
 
     def _h(self, target):
         for i in range(2*self.size):

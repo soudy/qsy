@@ -1,5 +1,4 @@
 import itertools
-import numpy as np
 
 from .backends import StatevectorBackend, CHPBackend
 from .register import Register
@@ -12,10 +11,6 @@ class QuantumRegister(Register):
     def __init__(self, size, name=None, backend=StatevectorBackend):
         super().__init__(size, name)
         self.backend = backend(self.size, self.name)
-
-    @property
-    def state(self):
-        return self.backend.state
 
     def apply_gate(self, gate, *params, adjoint=False):
         if len(params) != gate.arity:
@@ -33,7 +28,8 @@ class QuantumRegister(Register):
     def measure(self, target):
         return self.backend.measure(target)
 
+    def yield_state(self):
+        return self.backend.yield_state()
+
     def to_dirac(self):
-        return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a.item(), i, n=self.size)
-                        for a, i in zip(self.state, itertools.count())
-                        if not np.isclose(a.item(), 0.0))
+        return self.backend.to_dirac()

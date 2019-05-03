@@ -124,7 +124,7 @@ class QsyASMProgram:
 
             print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
-            for i, amplitude in np.ndenumerate(qr.state):
+            for i, amplitude in qr.yield_state():
                 amplitude = amplitude if not np.isclose(amplitude, 0.0) else 0.0
                 amplitude = '{:9.4f}'.format(amplitude).rstrip('0').rstrip('.')
                 i = i[0]

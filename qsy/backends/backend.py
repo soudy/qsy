@@ -14,6 +14,14 @@ class Backend(abc.ABC):
     def measure(self, target):
         raise NotImplementedError()
 
+    @abc.abstractmethod
+    def yield_state(self):
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def to_dirac(self):
+        raise NotImplementedError()
+
     def _check_in_range(self, target):
         if target < 0 or target >= self.size:
             raise Exception(
