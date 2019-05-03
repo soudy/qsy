@@ -56,6 +56,11 @@ class CHPBackend(Backend):
         elif gate == gates.H:
             self._h(target)
         elif gate == gates.S:
+            if adjoint:
+                # S^dagger = SSS
+                self._s(target)
+                self._s(target)
+
             self._s(target)
         elif gate == gates.X:
             self._x(target)
