@@ -6,6 +6,9 @@ class Register:
     prefix = 'r'
 
     def __init__(self, size, name=None):
+        if size <= 0 or not isinstance(size, int):
+            raise Exception('Invalid register size "{}"'.format(size))
+
         self.size = size
 
         if name is None:
