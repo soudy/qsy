@@ -17,6 +17,8 @@ def main():
     argparser.add_argument('-b', '--backend', choices=('chp', 'statevector'),
                            default=None, metavar='B',
                            help='simulator back-end to use: chp or statevector (default: statevector)')
+    argparser.add_argument('--ignore-print-warning', action='store_true',
+                           help='ignore register too large to print warning')
 
     args = vars(argparser.parse_args())
 

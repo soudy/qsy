@@ -35,10 +35,13 @@ OPERATION_GATES = {
 
 
 class QsyASMProgram:
+    MAX_PRINTABLE_QUBITS = 13
+
     def __init__(self, args):
         self.filename = args['filename']
         self.time = args['time']
         self.verbose = args['verbose']
+        self.ignore_print_warning = args['ignore_print_warning']
 
         self.shots = args['shots']
         self.measurement_results = {}
@@ -71,7 +74,7 @@ class QsyASMProgram:
         # TODO: we can auto-detect stabilizer circuits and use the CHP back-end
         # when it is capable of printing its state so no features are lost.
         #  if self._can_use_chp(instructions) and self.backend_arg is None:
-        #      print('Stabilizer circuit detected, using CHP back-end')
+        #      print(info_message('Stabilizer circuit detected, using CHP back-end'))
         #      self.backend = CHPBackend
 
         self._verbose_print('Executing {} shots'.format(self.shots))
@@ -115,10 +118,13 @@ class QsyASMProgram:
 
     def dump_registers(self):
         for qr_name, qr in self.env.qrs.items():
-            if qr.size > 31:
+            if qr.size > self.MAX_PRINTABLE_QUBITS and not self.ignore_print_warning:
                 print(
-                    warning_message('Register {} too big to print ({} qubits)'.format(
-                        qr.name, qr.size))
+                    warning_message(
+                        'Register {} too large to print ({} qubits)'.format(
+                            qr.name, qr.size) +
+                        ' (to print the state anyway, pass ' +
+                        '--ignore-print-warning as argument)')
                 )
                 continue
 
@@ -127,7 +133,6 @@ class QsyASMProgram:
             for i, amplitude in qr.yield_state():
                 amplitude = amplitude if not np.isclose(amplitude, 0.0) else 0.0
                 amplitude = '{:9.4f}'.format(amplitude).rstrip('0').rstrip('.')
-                i = i[0]
                 print('{} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
@@ -150,8 +155,8 @@ class QsyASMProgram:
             gate_arg = instr.op[1]
             gate = gate(gate_arg)
 
-        adjoint_message = 'adjoint' if instr.adjoint else ''
-        self._verbose_print('Applying gate {} {} on {}{}'.format(
+        adjoint_message = 'adjoint ' if instr.adjoint else ''
+        self._verbose_print('Applying gate {}{} on {}{}'.format(
                             adjoint_message, gate.name, register, targets))
 
         self.env.qr(register).apply_gate(gate, *targets, adjoint=instr.adjoint)

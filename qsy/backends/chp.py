@@ -2,6 +2,7 @@ import numpy as np
 
 from .backend import Backend
 from qsy import gates
+from qsyasm.log import info_message
 
 
 class CHPBackend(Backend):
@@ -18,31 +19,12 @@ class CHPBackend(Backend):
         self.name = name
         self.size = size
 
-        # X generators
-        self.x = np.concatenate(
-            (np.eye(self.size, dtype=int),
-             np.zeros((self.size, self.size), dtype=int),
-             # scratch space
-             np.zeros((1, self.size), dtype=int)),
-            axis=0
-        )
-
-        # Z generators
-        self.z = np.concatenate(
-            (np.zeros((self.size, self.size), dtype=int),
-             np.eye(self.size, dtype=int),
-             # scratch space
-             np.zeros((1, self.size), dtype=int)),
-            axis=0
-        )
-
-        # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
-        self.r = np.zeros((2*self.size + 1, 1), dtype=int)
+        self.x, self.z, self.r = self._init_tableau()
 
     def apply_gate(self, gate, *params, adjoint=False):
         if gate not in self.SUPPORTED_GATES:
-            raise Exception('Unsupported gate "{}" for back-end {}', gate.name,
-                            self.__name__)
+            raise Exception('Unsupported gate "{}" for back-end {}'.format(
+                            gate.name, self.__class__.__name__))
 
         if gate.arity == 1:
             target = params[0]
@@ -115,7 +97,11 @@ class CHPBackend(Backend):
         return [self.measure(i) for i in range(self.size)]
 
     def yield_state(self):
-        # TODO: make CHP state printable/readable
+        print(
+            info_message(
+                'Printing quantum state not supported for CHP back-end. ' +
+                'Use the statevector back-end if you wish to see the quantum state.')
+        )
         yield from []
 
     def to_dirac(self):
@@ -125,7 +111,6 @@ class CHPBackend(Backend):
     def _h(self, target):
         for i in range(2*self.size):
             self.r[i] ^= self.x[i][target] & self.z[i][target]
-            # Swap x_ia and z_ia
             self.x[i][target], self.z[i][target] = self.z[i][target], self.x[i][target]
 
     def _cnot(self, control, target):
@@ -154,6 +139,30 @@ class CHPBackend(Backend):
         self._h(target)
         self._cnot(control, target)
         self._h(target)
+
+    def _init_tableau(self):
+        # X generators
+        x = np.concatenate(
+            (np.eye(self.size, dtype=int),
+             np.zeros((self.size, self.size), dtype=int),
+             # scratch space
+             np.zeros((1, self.size), dtype=int)),
+            axis=0
+        )
+
+        # Z generators
+        z = np.concatenate(
+            (np.zeros((self.size, self.size), dtype=int),
+             np.eye(self.size, dtype=int),
+             # scratch space
+             np.zeros((1, self.size), dtype=int)),
+            axis=0
+        )
+
+        # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
+        r = np.zeros((2*self.size + 1, 1), dtype=int)
+
+        return x, z, r
 
     def _rowsum(self, h, i):
         def g(x1, z1, x2, z2):

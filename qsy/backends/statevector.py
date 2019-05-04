@@ -70,12 +70,13 @@ class StatevectorBackend(Backend):
         return measured_value
 
     def yield_state(self):
-        return np.ndenumerate(self.state)
+        for i, amplitude in np.ndenumerate(self.state):
+            yield i[0], amplitude
 
     def to_dirac(self):
-        return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a.item(), i, n=self.size)
+        return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a, i, n=self.size)
                         for a, i in zip(self.state, itertools.count())
-                        if not np.isclose(a.item(), 0.0))
+                        if not np.isclose(a, 0.0))
 
     def _apply_single_qubit_gate(self, gate, target, adjoint):
         self._check_in_range(target)
