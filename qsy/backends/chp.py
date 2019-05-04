@@ -161,7 +161,15 @@ class CHPBackend(Backend):
         self._h(target)
 
     def _rowsum(self, h, i):
+        '''
+        Set generator h equal to h + i. Keep track of the factors of i that r_h
+        goes through when multiplying Pauli matrices.
+        '''
         def g(x1, z1, x2, z2):
+            '''
+            Return the exponent to which i is raised (either 0, 1, or −1) when
+            the Pauli matrices represented by x1 z1 and x2 z2 are multiplied.
+            '''
             if x1 == z1 == 0:
                 return 0
             if x1 == z1 == 1:
