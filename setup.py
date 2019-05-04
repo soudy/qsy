@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     author='Steven Oud',
     author_email='soud@pm.me',
-    description='A quantum computer state vector simulator and quantum assembly language',
+    description='A quantum computer state vector/stabilizer circuit simulator and assembly language',
     license='MIT',
     install_requires=['numpy>=1.13', 'ply>=3'],
     entry_points = {

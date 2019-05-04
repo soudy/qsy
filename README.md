@@ -1,6 +1,6 @@
 # qsy
-A quantum computer state vector simulator and quantum assembly language in
-Python.
+A quantum computer state vector/stabilizer circuit simulator and assembly
+language.
 
 ## Table of Contents
 * [qsy](#qsy-1)

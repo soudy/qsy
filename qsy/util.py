@@ -2,13 +2,14 @@ import numpy as np
 
 
 def format_complex(c):
-    c = c if not np.isclose(c, 0.0) else 0.0
-    format = '{:+.5f}'.format(c.real).rstrip('0').rstrip('.')
+    fmt = '{:+.5f}'.format(c.real).rstrip('0').rstrip('.')
 
     if not np.isclose(c.imag, 0):
+        imag_fmt = '{:+.5f}'.format(c.imag).rstrip('0').rstrip('.') + 'i'
         if np.isclose(c.real, 0.0):
-            format = '{:+.5f}'.format(c.imag).rstrip('0').rstrip('.') + 'i'
+            fmt = imag_fmt
         else:
-            format += ' {:+.5f}'.format(c.imag).rstrip('0').rstrip('.') + 'i'
+            fmt += imag_fmt
+            fmt = '({})'.format(fmt)
 
-    return format
+    return fmt
