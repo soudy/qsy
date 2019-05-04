@@ -39,6 +39,13 @@ class QsyASMProgram:
 
     def __init__(self, args):
         self.filename = args['filename']
+
+        try:
+            with open(self.filename) as f:
+                self.input = f.read()
+        except FileNotFoundError as e:
+            raise QsyASMError(error_message('Error reading input: {}'.format(str(e))))
+
         self.time = args['time']
         self.verbose = args['verbose']
         self.ignore_print_warning = args['ignore_print_warning']
@@ -56,12 +63,6 @@ class QsyASMProgram:
 
         self.parser = QsyASMParser()
         self.env = Env()
-
-        try:
-            with open(self.filename) as f:
-                self.input = f.read()
-        except FileNotFoundError as e:
-            raise QsyASMError('Error reading input: {}'.format(str(e)))
 
     def run(self):
         start = time.time()
