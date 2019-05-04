@@ -35,7 +35,7 @@ OPERATION_GATES = {
 
 
 class QsyASMProgram:
-    MAX_PRINTABLE_QUBITS = 13
+    MAX_PRINTABLE_QUBITS = 16
 
     def __init__(self, args):
         self.filename = args['filename']
@@ -99,10 +99,8 @@ class QsyASMProgram:
             try:
                 if instr.is_gate():
                     self._eval_gate(instr)
-                elif instr.type == Operation.QR:
-                    self._eval_qr(instr)
-                elif instr.type == Operation.CR:
-                    self._eval_cr(instr)
+                elif instr.type == Operation.QR or instr.type == Operation.CR:
+                    self._eval_register(instr)
                 elif instr.type == Operation.MEASURE:
                     self._eval_measure(instr)
                 elif instr.type == Operation.ERROR:
@@ -162,17 +160,26 @@ class QsyASMProgram:
 
         self.env.qr(register).apply_gate(gate, *targets, adjoint=instr.adjoint)
 
-    def _eval_qr(self, instr):
+    def _eval_register(self, instr):
+        if len(instr.op) != 2:
+            raise QsyASMError(
+                self._error_message(
+                    'Missing register size in {} definition'.format(instr.op_name),
+                    instr.lexpos, instr.lineno
+                )
+            )
+
         register_size = instr.op[1]
 
-        for register_name in instr.args:
-            self.env.create_qr(register_name, register_size, self.backend)
+        if instr.type == Operation.QR:
+            for register_name in instr.args:
+                self.env.create_qr(register_name, register_size, self.backend)
+        elif instr.type == Operation.CR:
+            for register_name in instr.args:
+                self.env.create_cr(register_name, register_size)
 
     def _eval_cr(self, instr):
         register_size = instr.op[1]
-
-        for register_name in instr.args:
-            self.env.create_cr(register_name, register_size)
 
     def _eval_measure(self, instr):
         qtarget = instr.args[0]
