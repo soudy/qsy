@@ -1,7 +1,7 @@
 import numpy as np
 
 from qsy import gates
-from qsyasm.log import info_message
+from qsyasm.log import print_info
 
 from .backend import Backend
 
@@ -117,10 +117,9 @@ class CHPBackend(Backend):
         return [self.measure(i) for i in range(self.size)]
 
     def yield_state(self):
-        print(
-            info_message(
-                'Printing quantum state is not supported by the CHP back-end. ' +
-                'Use the statevector back-end if you wish to see the quantum state.')
+        print_info(
+            'Printing quantum state is not supported by the CHP back-end. ' +
+            'Use the statevector back-end if you wish to see the quantum state.'
         )
         yield from []
 

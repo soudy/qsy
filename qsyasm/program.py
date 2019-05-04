@@ -2,7 +2,7 @@ import numpy as np
 import time
 from collections import defaultdict
 
-from qsy import gates
+from qsy import gates, __version__
 from qsy.util import format_complex
 from qsy.backends import StatevectorBackend, CHPBackend
 
@@ -10,7 +10,7 @@ from .error import ParseError, QsyASMError
 from .parser import QsyASMParser
 from .instruction import Operation
 from .env import Env
-from .log import error_message, warning_message, info_message
+from .log import error_fmt, print_warning, print_info
 
 OPERATION_GATES = {
     Operation.I: gates.I,
@@ -45,7 +45,7 @@ class QsyASMProgram:
             with open(self.filename) as f:
                 self.input = f.read()
         except FileNotFoundError as e:
-            raise QsyASMError(error_message('Error reading input: {}'.format(str(e))))
+            raise QsyASMError(error_fmt('Error reading input: {}'.format(str(e))))
 
         self.time = args['time']
         self.verbose = args['verbose']
@@ -66,6 +66,10 @@ class QsyASMProgram:
         self.env = Env()
 
     def run(self):
+        print_info('qsyasm v{}'.format(__version__))
+        print_info('A state vector/stabilizer circuit simulator assembly runner')
+        print_info('=' * 60)
+
         start = time.time()
 
         try:
@@ -76,7 +80,7 @@ class QsyASMProgram:
         # TODO: we can auto-detect stabilizer circuits and use the CHP back-end
         # when it is capable of printing its state so no features are lost.
         #  if self._can_use_chp(instructions) and self.backend_arg is None:
-        #      print(info_message('Stabilizer circuit detected, using CHP back-end'))
+        #      print_info('Stabilizer circuit detected, using CHP back-end')
         #      self.backend = CHPBackend
 
         self._verbose_print('Executing {} shots'.format(self.shots))
@@ -90,10 +94,7 @@ class QsyASMProgram:
         self.dump_registers()
 
         if self.time:
-            print(
-                info_message('Program execution took {:.5f} seconds'.format(
-                             end - start))
-            )
+            print_info('Program execution took {:.5f} seconds'.format(end - start))
 
     def eval(self, instructions):
         for instr in instructions:
@@ -119,20 +120,18 @@ class QsyASMProgram:
     def dump_registers(self):
         for qr_name, qr in self.env.qrs.items():
             if qr.size > self.MAX_PRINTABLE_QUBITS and not self.ignore_print_warning:
-                print(
-                    warning_message(
-                        'Register {} too large to print ({} qubits)'.format(
-                            qr.name, qr.size) +
-                        ' (to print the state anyway, pass ' +
-                        '--ignore-print-warning as argument)')
-                )
+                print_warning(
+                    'Register {} too large to print ({} qubits)'.format(
+                        qr.name, qr.size) +
+                    ' (to print the state anyway, pass ' +
+                    '--ignore-print-warning as argument)')
                 continue
 
             print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
             for i, amplitude in qr.yield_state():
                 amplitude = format_complex(amplitude)
-                print('{:5} | {:0{size}b}'.format(amplitude, i, size=qr.size))
+                print('{:>8} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
             if self.shots > 1:
@@ -254,11 +253,11 @@ class QsyASMProgram:
 
     def _verbose_print(self, msg):
         if self.verbose:
-            print(info_message(msg))
+            print_info(msg)
 
     def _error_message(self, msg, lexpos, lineno):
         column = self._find_column(lexpos)
-        msg = error_message(msg)
+        msg = error_fmt(msg)
         return '{}:{}:{}: {}'.format(self.filename, lineno, column, msg)
 
     def _find_column(self, lexpos):

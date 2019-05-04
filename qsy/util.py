@@ -10,6 +10,5 @@ def format_complex(c):
             fmt = imag_fmt
         else:
             fmt += imag_fmt
-            fmt = '({})'.format(fmt)
 
     return fmt

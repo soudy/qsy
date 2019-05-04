@@ -5,7 +5,7 @@ from qsy import __version__
 
 from .program import QsyASMProgram
 from .error import QsyASMError
-from .log import info_message
+from .log import print_info
 
 
 def main():
@@ -29,10 +29,6 @@ def main():
     args = vars(argparser.parse_args())
 
     try:
-        print(info_message('qsyasm v{}'.format(__version__)))
-        print(info_message('A state vector/stabilizer circuit simulator assembly runner'))
-        print(info_message('=' * 60))
-
         p = QsyASMProgram(args)
         p.run()
     except QsyASMError as e:

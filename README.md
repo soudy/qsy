@@ -79,22 +79,22 @@ meas q, c
 Running it:
 ```
 $ qsyasm examples/qsyasm/bell.qs
-q[2]: +1|00>
-+1    | 00
-+0    | 01
-+0    | 10
-+0    | 11
-c[2]: 00
+q[2]: +1|11>
+      +0 | 00
+      +0 | 01
+      +0 | 10
+      +1 | 11
+c[2]: 11
 ```
 Or running it a number of times:
 ```
 $ qsyasm examples/qsyasm/bell.qs --shots=1024
 q[2]: +1|00>
-+1    | 00
-+0    | 01
-+0    | 10
-+0    | 11
-c[2]: {'11': 538, '00': 486}
+      +1 | 00
+      +0 | 01
+      +0 | 10
+      +0 | 11
+c[2]: {'11': 550, '00': 474}
 ```
 More examples such as the quantum phase estimation algorithm can be found in the
 [examples/qsyasm](examples/qsyasm) folder.
