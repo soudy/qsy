@@ -43,20 +43,25 @@ Hadamard, and phase gates) using the `chp` back-end.
 
 ### Usage
 ```
-usage: qsyasm [-h] [-v] [-t] [-s N] [-b B] filename
+usage: qsyasm [-h] [-V] [-v] [-t] [-b B] [-s SHOTS] [--ignore-print-warning]
+              filename
 
 qsyasm assembly runner
 
 positional arguments:
-  filename           qsyasm file to execute
+  filename              qsyasm file to execute
 
 optional arguments:
-  -h, --help         show this help message and exit
-  -v, --verbose      verbose output
-  -t, --time         time program execution
-  -s N, --shots N    amount of shots to run
-  -b B, --backend B  simulator back-end to use: chp or statevector (default:
-                     statevector)
+  -h, --help            show this help message and exit
+  -V, --version         show program's version number and exit
+  -v, --verbose         verbose output
+  -t, --time            time program execution
+  -b B, --backend B     simulator back-end to use: chp or statevector
+                        (default: statevector)
+  -s SHOTS, --shots SHOTS
+                        amount of shots to run
+  --ignore-print-warning
+                        ignore register too large to print warning
 ```
 
 ### Example
