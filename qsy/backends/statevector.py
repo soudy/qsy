@@ -114,9 +114,9 @@ class StatevectorBackend(Backend):
         for (i, j), value in np.ndenumerate(transformation_matrix):
             if np.isnan(value):
                 if i == j:
-                    transformation_matrix[i][j] = 1
+                    transformation_matrix[i, j] = 1
                 else:
-                    transformation_matrix[i][j] = 0
+                    transformation_matrix[i, j] = 0
 
         self._transform(transformation_matrix)
 

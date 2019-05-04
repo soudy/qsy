@@ -22,24 +22,24 @@ class CHPBackend(Backend):
         # Initialize tableau
         # X generators
         self.x = np.concatenate(
-            (np.eye(self.size, dtype=int),
-             np.zeros((self.size, self.size), dtype=int),
+            (np.eye(self.size, dtype=np.int8),
+             np.zeros((self.size, self.size), dtype=np.int8),
              # scratch space
-             np.zeros((1, self.size), dtype=int)),
+             np.zeros((1, self.size), dtype=np.int8)),
             axis=0
         )
 
         # Z generators
         self.z = np.concatenate(
-            (np.zeros((self.size, self.size), dtype=int),
-             np.eye(self.size, dtype=int),
+            (np.zeros((self.size, self.size), dtype=np.int8),
+             np.eye(self.size, dtype=np.int8),
              # scratch space
-             np.zeros((1, self.size), dtype=int)),
+             np.zeros((1, self.size), dtype=np.int8)),
             axis=0
         )
 
         # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
-        self.r = np.zeros((2*self.size + 1, 1), dtype=int)
+        self.r = np.zeros((2*self.size + 1, 1), dtype=np.int8)
 
     def apply_gate(self, gate, *params, adjoint=False):
         if gate not in self.SUPPORTED_GATES:
@@ -48,13 +48,12 @@ class CHPBackend(Backend):
 
         if gate.arity == 1:
             target = params[0]
-
-            self._check_in_range(target)
         else:
             control, target = params
 
             self._check_in_range(control)
-            self._check_in_range(target)
+
+        self._check_in_range(target)
 
         if gate == gates.CX:
             self._cnot(control, target)
@@ -77,14 +76,14 @@ class CHPBackend(Backend):
     def measure(self, target):
         p = None
         for i in range(self.size, 2*self.size):
-            if self.x[i][target] == 1:
+            if self.x[i, target] == 1:
                 p = i
                 break
 
         if p is not None:
             # Measurement outcome is probabilistic
             for i in range(2*self.size):
-                if i != p and self.x[i][target] == 1:
+                if i != p and self.x[i, target] == 1:
                     self._rowsum(i, p)
 
             # Set (p−n)th row equal to pth row
@@ -98,7 +97,7 @@ class CHPBackend(Backend):
             measurement = np.random.randint(2)
             self.r[p] = measurement
 
-            self.z[p][target] = 1
+            self.z[p, target] = 1
 
             return measurement
         else:
@@ -108,7 +107,7 @@ class CHPBackend(Backend):
             self.r[2*self.size] = 0
 
             for i in range(self.size):
-                if self.x[i][target] == 1:
+                if self.x[i, target] == 1:
                     self._rowsum(2*self.size, i + self.size)
 
             return int(self.r[2*self.size])
@@ -126,25 +125,28 @@ class CHPBackend(Backend):
 
     def to_dirac(self):
         # TODO: make CHP state printable/readable
+        print(self.x)
+        print(self.z)
+        print(self.r)
         return ''
 
     def _h(self, target):
         for i in range(2*self.size):
-            self.r[i] ^= self.x[i][target] & self.z[i][target]
-            self.x[i][target], self.z[i][target] = self.z[i][target], self.x[i][target]
+            self.r[i] ^= self.x[i, target] & self.z[i, target]
+            self.x[i, target], self.z[i, target] = self.z[i, target], self.x[i, target]
 
     def _cnot(self, control, target):
         for i in range(2*self.size):
-            self.r[i] ^= self.x[i][control] & self.z[i][target]
-            self.r[i] &= self.x[i][target] ^ self.z[i][control] ^ 1
+            self.r[i] ^= self.x[i, control] & self.z[i, target]
+            self.r[i] &= self.x[i, target] ^ self.z[i, control] ^ 1
 
-            self.x[i][target] ^= self.x[i][control]
-            self.z[i][control] ^= self.z[i][target]
+            self.x[i, target] ^= self.x[i, control]
+            self.z[i, control] ^= self.z[i, target]
 
     def _s(self, target):
         for i in range(2*self.size):
-            self.r[i] ^= self.x[i][target] & self.z[i][target]
-            self.z[i][target] ^= self.x[i][target]
+            self.r[i] ^= self.x[i, target] & self.z[i, target]
+            self.z[i, target] ^= self.x[i, target]
 
     def _x(self, target):
         self._h(target)
@@ -171,7 +173,7 @@ class CHPBackend(Backend):
             if x1 == 0 and z1 == 1:
                 return x2 * (1 - 2*z2)
 
-        rowsum = sum(g(self.x[i][j], self.z[i][j], self.x[h][j], self.z[h][j])
+        rowsum = sum(g(self.x[i, j], self.z[i, j], self.x[h, j], self.z[h, j])
                      for j in range(self.size))
         rowsum += 2*self.r[h] + 2*self.r[i]
 
@@ -181,5 +183,5 @@ class CHPBackend(Backend):
             self.r[h] = 1
 
         for j in range(self.size):
-            self.x[h][j] ^= self.x[i][j]
-            self.z[h][j] ^= self.z[i][j]
+            self.x[h, j] ^= self.x[i, j]
+            self.z[h, j] ^= self.z[i, j]
