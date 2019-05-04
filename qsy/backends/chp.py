@@ -19,7 +19,27 @@ class CHPBackend(Backend):
         self.name = name
         self.size = size
 
-        self.x, self.z, self.r = self._init_tableau()
+        # Initialize tableau
+        # X generators
+        self.x = np.concatenate(
+            (np.eye(self.size, dtype=int),
+             np.zeros((self.size, self.size), dtype=int),
+             # scratch space
+             np.zeros((1, self.size), dtype=int)),
+            axis=0
+        )
+
+        # Z generators
+        self.z = np.concatenate(
+            (np.zeros((self.size, self.size), dtype=int),
+             np.eye(self.size, dtype=int),
+             # scratch space
+             np.zeros((1, self.size), dtype=int)),
+            axis=0
+        )
+
+        # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
+        self.r = np.zeros((2*self.size + 1, 1), dtype=int)
 
     def apply_gate(self, gate, *params, adjoint=False):
         if gate not in self.SUPPORTED_GATES:
@@ -99,7 +119,7 @@ class CHPBackend(Backend):
     def yield_state(self):
         print(
             info_message(
-                'Printing quantum state not supported for CHP back-end. ' +
+                'Printing quantum state is not supported by the CHP back-end. ' +
                 'Use the statevector back-end if you wish to see the quantum state.')
         )
         yield from []
@@ -139,30 +159,6 @@ class CHPBackend(Backend):
         self._h(target)
         self._cnot(control, target)
         self._h(target)
-
-    def _init_tableau(self):
-        # X generators
-        x = np.concatenate(
-            (np.eye(self.size, dtype=int),
-             np.zeros((self.size, self.size), dtype=int),
-             # scratch space
-             np.zeros((1, self.size), dtype=int)),
-            axis=0
-        )
-
-        # Z generators
-        z = np.concatenate(
-            (np.zeros((self.size, self.size), dtype=int),
-             np.eye(self.size, dtype=int),
-             # scratch space
-             np.zeros((1, self.size), dtype=int)),
-            axis=0
-        )
-
-        # Phase (0 for +1, 1 for i, 2 for -1, 3 for -i)
-        r = np.zeros((2*self.size + 1, 1), dtype=int)
-
-        return x, z, r
 
     def _rowsum(self, h, i):
         def g(x1, z1, x2, z2):
