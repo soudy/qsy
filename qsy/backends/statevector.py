@@ -4,6 +4,8 @@ import functools
 import itertools
 
 from qsy import gates
+from qsy.util import format_complex
+
 from .backend import Backend
 
 
@@ -74,7 +76,7 @@ class StatevectorBackend(Backend):
             yield i[0], amplitude
 
     def to_dirac(self):
-        return ' '.join('{:+.4f}|{:0{n:d}b}>'.format(a, i, n=self.size)
+        return ' '.join('{}|{:0{n:d}b}>'.format(format_complex(a), i, n=self.size)
                         for a, i in zip(self.state, itertools.count())
                         if not np.isclose(a, 0.0))
 

@@ -1,8 +1,9 @@
 import numpy as np
 
-from .backend import Backend
 from qsy import gates
 from qsyasm.log import info_message
+
+from .backend import Backend
 
 
 class CHPBackend(Backend):
@@ -125,9 +126,6 @@ class CHPBackend(Backend):
 
     def to_dirac(self):
         # TODO: make CHP state printable/readable
-        print(self.x)
-        print(self.z)
-        print(self.r)
         return ''
 
     def _h(self, target):

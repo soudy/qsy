@@ -1,5 +1,5 @@
-qreg q[5]
-creg c[2]
+qreg[5] q
+creg[2] c
 
 h q[0]
 h q[1]

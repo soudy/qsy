@@ -2,14 +2,15 @@ import numpy as np
 import time
 from collections import defaultdict
 
+from qsy import gates
+from qsy.util import format_complex
+from qsy.backends import StatevectorBackend, CHPBackend
+
 from .error import ParseError, QsyASMError
 from .parser import QsyASMParser
 from .instruction import Operation
 from .env import Env
 from .log import error_message, warning_message, info_message
-
-from qsy import gates
-from qsy.backends import StatevectorBackend, CHPBackend
 
 OPERATION_GATES = {
     Operation.I: gates.I,
@@ -130,9 +131,8 @@ class QsyASMProgram:
             print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
             for i, amplitude in qr.yield_state():
-                amplitude = amplitude if not np.isclose(amplitude, 0.0) else 0.0
-                amplitude = '{:9.4f}'.format(amplitude).rstrip('0').rstrip('.')
-                print('{} | {:0{size}b}'.format(amplitude, i, size=qr.size))
+                amplitude = format_complex(amplitude)
+                print('{:5} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
             if self.shots > 1:

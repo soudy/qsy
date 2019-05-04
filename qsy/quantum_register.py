@@ -1,6 +1,6 @@
 import itertools
 
-from .backends import StatevectorBackend, CHPBackend
+from .backends import StatevectorBackend
 from .register import Register
 
 

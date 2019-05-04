@@ -32,7 +32,7 @@ print(qr.to_dirac())
 ```
 The output will be:
 ```
-+0.7071|00> +0.7071|11>
++0.70711|00> +0.70711|11>
 ```
 
 ## qsyASM
@@ -74,24 +74,24 @@ meas q, c
 Running it:
 ```
 $ qsyasm examples/qsyasm/bell.qs
-q[2]: +1.0000|11>
-      0.0 | 00
-      0.0 | 01
-      0.0 | 10
-      1.0 | 11
-c[2]: 11
+q[2]: +1|00>
++1    | 00
++0    | 01
++0    | 10
++0    | 11
+c[2]: 00
 ```
 Or running it a number of times:
 ```
 $ qsyasm examples/qsyasm/bell.qs --shots=1024
-q[2]: +1.0000|11>
-        0.0 | 00
-        0.0 | 01
-        0.0 | 10
-        1.0 | 11
-c[2]: {'00': 543, '11': 481}
+q[2]: +1|00>
++1    | 00
++0    | 01
++0    | 10
++0    | 11
+c[2]: {'11': 538, '00': 486}
 ```
-More examples such as the Quantum Phase Estimation algorithm can be found in the
+More examples such as the quantum phase estimation algorithm can be found in the
 [examples/qsyasm](examples/qsyasm) folder.
 
 ### Syntax
