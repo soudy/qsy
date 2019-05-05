@@ -3,6 +3,7 @@ A quantum computer state vector/stabilizer circuit simulator and assembly
 language.
 
 ## Table of Contents
+* [Installation](#installation)
 * [qsy](#qsy-1)
    * [Example](#example)
 * [qsyASM](#qsyasm)
@@ -14,6 +15,14 @@ language.
          * [List of Operations](#list-of-operations)
       * [Registers](#registers)
       * [Measurement](#measurement)
+* [License](#license)
+
+## Installation
+```
+$ pip install qsy
+```
+
+This will install the Python library qsy and command-line tool qsyasm.
 
 ## qsy
 qsy is a Python library for simulating quantum circuits.
@@ -187,3 +196,7 @@ cx q[0], q[2]
 meas q, c
 ```
 collapsing the quantum register `q` and storing the measurement result in `c`. This only works when the quantum register and classical register are equal in size.
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file
+for the full license.
