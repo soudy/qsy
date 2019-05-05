@@ -5,7 +5,7 @@ from qsy import __version__
 
 from .program import QsyASMProgram
 from .error import QsyASMError
-from .log import print_info
+from .log import print_error
 
 
 def main():
@@ -32,5 +32,5 @@ def main():
         p = QsyASMProgram(args)
         p.run()
     except QsyASMError as e:
-        print(e, file=sys.stderr)
+        print_error(e)
         sys.exit(-1)

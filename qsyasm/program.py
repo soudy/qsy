@@ -10,7 +10,7 @@ from .error import ParseError, QsyASMError
 from .parser import QsyASMParser
 from .instruction import Operation
 from .env import Env
-from .log import error_fmt, print_warning, print_info
+from .log import print_warning, print_info
 
 OPERATION_GATES = {
     Operation.I: gates.I,
@@ -45,7 +45,7 @@ class QsyASMProgram:
             with open(self.filename) as f:
                 self.input = f.read()
         except FileNotFoundError as e:
-            raise QsyASMError(error_fmt('Error reading input: {}'.format(str(e))))
+            raise QsyASMError('Error reading input: {}'.format(str(e)))
 
         self.time = args['time']
         self.verbose = args['verbose']
@@ -257,7 +257,6 @@ class QsyASMProgram:
 
     def _error_message(self, msg, lexpos, lineno):
         column = self._find_column(lexpos)
-        msg = error_fmt(msg)
         return '{}:{}:{}: {}'.format(self.filename, lineno, column, msg)
 
     def _find_column(self, lexpos):
