@@ -109,11 +109,12 @@ class QsyASMProgram:
                     raise QsyASMError(
                         self._error_message(
                             'Undefined operation "{}"'.format(instr.op[0]),
-                            instr
+                            instr.lexpos,
+                            instr.lineno
                         )
                     )
             except QsyASMError as e:
-                raise QsyASMError(e)
+                raise e
             except Exception as e:
                 raise QsyASMError(self._error_message(e, instr.lexpos, instr.lineno))
 
