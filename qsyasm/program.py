@@ -178,9 +178,6 @@ class QsyASMProgram:
             for register_name in instr.args:
                 self.env.create_cr(register_name, register_size)
 
-    def _eval_cr(self, instr):
-        register_size = instr.op[1]
-
     def _eval_measure(self, instr):
         qtarget = instr.args[0]
         qtarget_name = qtarget[0]
