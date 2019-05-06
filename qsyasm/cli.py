@@ -25,6 +25,8 @@ def main():
                            default=1, help='amount of shots to run')
     argparser.add_argument('--ignore-print-warning', action='store_true',
                            help='ignore register too large to print warning')
+    argparser.add_argument('--skip-zero-amplitudes', action='store_true',
+                           help='don\'t print states with an amplitude of 0')
 
     args = vars(argparser.parse_args())
 

@@ -53,6 +53,7 @@ Hadamard, and phase gates) using the `chp` back-end.
 ### Usage
 ```
 usage: qsyasm [-h] [-V] [-v] [-t] [-b B] [-s SHOTS] [--ignore-print-warning]
+              [--skip-zero-amplitudes]
               filename
 
 qsyasm assembly runner
@@ -71,6 +72,8 @@ optional arguments:
                         amount of shots to run
   --ignore-print-warning
                         ignore register too large to print warning
+  --skip-zero-amplitudes
+                        don't print states with an amplitude of 0
 ```
 
 ### Example

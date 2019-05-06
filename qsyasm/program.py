@@ -50,6 +50,7 @@ class QsyASMProgram:
         self.time = args['time']
         self.verbose = args['verbose']
         self.ignore_print_warning = args['ignore_print_warning']
+        self.skip_zero_amplitudes = args['skip_zero_amplitudes']
 
         self.shots = args['shots']
         self.measurement_results = {}
@@ -131,6 +132,9 @@ class QsyASMProgram:
             print('{}[{}]: {}'.format(qr_name, qr.size, qr.to_dirac()))
 
             for i, amplitude in qr.yield_state():
+                if np.isclose(amplitude, 0) and self.skip_zero_amplitudes:
+                    continue
+
                 amplitude = format_complex(amplitude)
                 print('{:>8} | {:0{size}b}'.format(amplitude, i, size=qr.size))
 
