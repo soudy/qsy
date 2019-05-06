@@ -21,8 +21,8 @@ def main():
     argparser.add_argument('-b', '--backend', choices=('chp', 'statevector'),
                            default=None, metavar='B',
                            help='simulator back-end to use: chp or statevector (default: statevector)')
-    argparser.add_argument('-s', '--shots', type=int,
-                           default=1, help='amount of shots to run')
+    argparser.add_argument('-s', '--shots', type=int, default=1,
+                           help='amount of shots to run')
     argparser.add_argument('--ignore-print-warning', action='store_true',
                            help='ignore register too large to print warning')
     argparser.add_argument('--skip-zero-amplitudes', action='store_true',

@@ -20,8 +20,7 @@ setup(
     url='https://github.com/soudy/qsy',
     license='MIT',
     install_requires=['numpy>=1.13', 'ply>=3'],
-    download_url='https://github.com/soudy/qsy/archive/v{}.tar.gz'.format(
-        version),
+    download_url='https://github.com/soudy/qsy/archive/v{}.tar.gz'.format(version),
     keywords=['quantum', 'computing', 'simulator', 'stabilizer', 'circuit',
               'assembly', 'chp', 'statevector'],
     entry_points={
