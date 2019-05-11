@@ -44,8 +44,11 @@ class CHPBackend(Backend):
 
     def apply_gate(self, gate, *params, adjoint=False):
         if gate not in self.SUPPORTED_GATES:
-            raise Exception('Unsupported gate "{}" for back-end {}'.format(
-                            gate.name, self.__class__.__name__))
+            supported_gate_names = map(lambda g: g.name, self.SUPPORTED_GATES)
+            raise Exception(
+                'Unsupported gate "{}" for CHP back-end. '.format(gate.name) +
+                'Supported gates are {}.'.format(', '.join(supported_gate_names))
+            )
 
         if gate.arity == 1:
             target = params[0]
