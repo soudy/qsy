@@ -15,7 +15,7 @@ language.
          * [List of Operations](#list-of-operations)
       * [Registers](#registers)
       * [Measurement](#measurement)
-      * [Efficient simulation of stabilizer circuits](#efficient-simulation-of-stabilizer-circuits)
+    * [Efficient simulation of stabilizer circuits](#efficient-simulation-of-stabilizer-circuits)
 * [License](#license)
 
 ## Installation
@@ -196,7 +196,7 @@ meas q, c
 ```
 collapsing the quantum register `q` and storing the measurement result in `c`. This only works when the quantum register and classical register are equal in size.
 
-#### Efficient simulation of stabilizer circuits
+### Efficient simulation of stabilizer circuits
 Circuits consisting only of CNOT, H, S, X, Z and CZ gates can be efficiently
 simulated with the CHP back-end. Using any other operations with the CHP
 back-end will result in an error.
