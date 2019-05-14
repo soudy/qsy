@@ -15,6 +15,7 @@ language.
          * [List of Operations](#list-of-operations)
       * [Registers](#registers)
       * [Measurement](#measurement)
+      * [Efficient simulation of stabilizer circuits](#efficient-simulation-of-stabilizer-circuits)
 * [License](#license)
 
 ## Installation
@@ -47,8 +48,7 @@ The output will be:
 ## qsyASM
 qsyASM is a quantum assembly language acting as front-end for qsy. It allows
 you to quickly write and debug quantum programs. It also allows for efficient
-simulation of stabilizer circuits (a quantum circuit consisting solely of CNOT,
-Hadamard, and phase gates) using the `chp` back-end.
+simulation of stabilizer circuits using the `chp` back-end.
 
 ### Usage
 ```
@@ -156,10 +156,6 @@ adj s q[0]
 | CRz      | `crz(angle) control, target`     |
 | Toffoli  | `ccx controlA, controlB, target` |
 
-**Note**: The operations CNOT, H, S, X, Z and CZ can be efficiently simulated with
-the CHP back-end. Using any other operations with the CHP back-end will result
-in an error.
-
 #### Registers
 Defining a quantum register is done with the `qreg` operation. The instruction
 ```asm
@@ -199,6 +195,19 @@ cx q[0], q[2]
 meas q, c
 ```
 collapsing the quantum register `q` and storing the measurement result in `c`. This only works when the quantum register and classical register are equal in size.
+
+#### Efficient simulation of stabilizer circuits
+Circuits consisting only of CNOT, H, S, X, Z and CZ gates can be efficiently
+simulated with the CHP back-end. Using any other operations with the CHP
+back-end will result in an error.
+
+For example, we can simulate a partially entangled 750 qubit state:
+```
+$ qsyasm examples/qsyasm/750_qubits.qs --backend=chp
+c[750]: 000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+```
+
+For more information on how this is done, see [arXiv:quant-ph/0406196](https://arxiv.org/abs/quant-ph/0406196).
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file
