@@ -123,7 +123,7 @@ class QsyASMProgram:
         for qr_name, qr in self.env.qrs.items():
             if qr.size > self.MAX_PRINTABLE_QUBITS and not self.ignore_print_warning:
                 print_warning(
-                    'Register {} too large to print ({} qubits)'.format(
+                    'Quantum register {} too large to print ({} qubits)'.format(
                         qr.name, qr.size) +
                     ' (to print the state anyway, pass ' +
                     '--ignore-print-warning as argument)')
