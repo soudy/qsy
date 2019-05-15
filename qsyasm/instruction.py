@@ -1,38 +1,39 @@
-from enum import Enum
+from enum import IntEnum, auto, unique
 from .error import QsyASMError
 
 
-class Operation:
+@unique
+class Operation(IntEnum):
     # Gates
-    GATES_START = 0
-    I = 1
-    X = 2
-    Y = 3
-    Z = 4
+    GATES_START = auto()
+    I = auto()
+    X = auto()
+    Y = auto()
+    Z = auto()
 
-    H = 5
-    S = 6
-    CX = 7
-    CY = 8
-    CZ = 9
+    H = auto()
+    S = auto()
+    CX = auto()
+    CY = auto()
+    CZ = auto()
 
-    T = 10
-    RX = 11
-    RY = 12
-    RZ = 13
-    CRX = 14
-    CRY = 15
-    CRZ = 16
-    CCX = 17
-    GATES_END = 18
+    T = auto()
+    RX = auto()
+    RY = auto()
+    RZ = auto()
+    CRX = auto()
+    CRY = auto()
+    CRZ = auto()
+    CCX = auto()
+    GATES_END = auto()
 
     # Registers
-    QR = 19
-    CR = 20
+    QR = auto()
+    CR = auto()
 
-    MEASURE = 21
+    MEASURE = auto()
 
-    ERROR = 22
+    ERROR = auto()
 
 
 operations = {
