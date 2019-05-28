@@ -197,7 +197,7 @@ meas q, c
 collapsing the quantum register `q` and storing the measurement result in `c`. This only works when the quantum register and classical register are equal in size.
 
 ### Efficient simulation of stabilizer circuits
-Circuits consisting only of CNOT, H, S, X, Z and CZ gates can be efficiently
+Circuits consisting only of CNOT, H, S, X, Y, Z and CZ gates can be efficiently
 simulated with the CHP back-end. Using any other operations with the CHP
 back-end will result in an error.
 
@@ -207,7 +207,9 @@ $ qsyasm examples/qsyasm/750_qubits.qs --backend=chp
 c[750]: 000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 ```
 
-For more information on how this is done, see [arXiv:quant-ph/0406196](https://arxiv.org/abs/quant-ph/0406196).
+This back-end is an implementation of the CHP simulator described by
+Scott Aaronson and Daniel Gottesman in their paper "Improved Simulation of Stabilizer Circuits"
+([arXiv:quant-ph/0406196](https://arxiv.org/abs/quant-ph/0406196)).
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file

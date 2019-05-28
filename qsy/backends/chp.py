@@ -14,7 +14,8 @@ class CHPBackend(Backend):
     https://arxiv.org/abs/quant-ph/0406196.
     '''
 
-    SUPPORTED_GATES = [gates.CX, gates.H, gates.S, gates.X, gates.Z, gates.CZ]
+    SUPPORTED_GATES = [gates.CX, gates.H, gates.S, gates.X, gates.Y, gates.Z,
+                       gates.CZ]
 
     def __init__(self, size, name):
         self.name = name
@@ -72,6 +73,8 @@ class CHPBackend(Backend):
             self._s(target)
         elif gate == gates.X:
             self._x(target)
+        elif gate == gates.Y:
+            self._y(target)
         elif gate == gates.Z:
             self._z(target)
         elif gate == gates.CZ:
@@ -149,6 +152,12 @@ class CHPBackend(Backend):
             self.z[i, target] ^= self.x[i, target]
 
     def _x(self, target):
+        self._h(target)
+        self._z(target)
+        self._h(target)
+
+    def _y(self, target):
+        self._z(target)
         self._h(target)
         self._z(target)
         self._h(target)
