@@ -2,13 +2,13 @@ import ply.yacc as yacc
 import itertools
 import numpy as np
 
-from . import tokens
-from .instruction import Instruction
-from .error import ParseError
+from qsyasm.instruction import Instruction
+from qsyasm.error import ParseError
+from .lexer import QsyASMLexer
 
 
 class QsyASMParser:
-    tokens = tokens
+    tokens = QsyASMLexer.tokens
     precedence = (
         ('left', 'PLUS', 'MIN'),
         ('left', 'MUL', 'DIV'),

@@ -7,7 +7,7 @@ from qsy.util import format_complex
 from qsy.backends import StatevectorBackend, CHPBackend
 
 from .error import ParseError, QsyASMError
-from .parser import QsyASMParser
+from .interpreter.parser import QsyASMParser
 from .instruction import Operation
 from .env import Env
 from .log import print_warning, print_info

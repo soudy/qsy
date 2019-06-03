@@ -1,5 +1,5 @@
 import ply.lex as lex
-from .error import ParseError
+from qsyasm.error import ParseError
 
 
 class QsyASMLexer:
