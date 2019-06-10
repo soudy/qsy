@@ -136,10 +136,10 @@ class QsyASMProgram:
                     continue
 
                 amplitude = format_complex(amplitude)
-                print('{:>8} | {:0{size}b}'.format(amplitude, i, size=qr.size))
+                print('{:>8} |{:0{size}b}>'.format(amplitude, i, size=qr.size))
 
         for cr_name, cr in self.env.crs.items():
-            if self.shots > 1:
+            if self.shots > 1 and self.measurement_results:
                 bits = dict(self.measurement_results[cr_name])
             else:
                 bits = ''.join(str(bit) for bit in cr.state)
@@ -230,9 +230,9 @@ class QsyASMProgram:
                 ctarget, register_index = ctarget
                 self.env.cr(ctarget)[register_index] = measured
 
-        # Save measurement results when shots > 1
-        if self.shots > 1 and ctarget not in self.measurement_results:
-            self.measurement_results[ctarget] = defaultdict(int)
+            # Save measurement results when shots > 1
+            if self.shots > 1 and ctarget not in self.measurement_results:
+                self.measurement_results[ctarget] = defaultdict(int)
 
     def _save_measurements(self):
         for cr_name in self.measurement_results.keys():
