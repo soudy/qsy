@@ -1,5 +1,7 @@
 import abc
 
+from qsy.error import RegisterIndexError
+
 
 class Backend(abc.ABC):
     @abc.abstractmethod
@@ -24,7 +26,7 @@ class Backend(abc.ABC):
 
     def _check_in_range(self, target):
         if target < 0 or target >= self.size:
-            raise Exception(
+            raise RegisterIndexError(
                 'Can\'t access {}[{}]: register index out of range (register size {})'.format(
                     self.name, target, self.size
                 )

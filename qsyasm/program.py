@@ -5,6 +5,7 @@ from collections import defaultdict
 from qsy import gates, __version__
 from qsy.util import format_complex
 from qsy.backends import StatevectorBackend, CHPBackend
+from qsy.error import RegisterIndexError, InvalidRegisterError
 
 from .error import ParseError, QsyASMError
 from .interpreter.parser import QsyASMParser
@@ -44,7 +45,7 @@ class QsyASMProgram:
         try:
             with open(self.filename) as f:
                 self.input = f.read()
-        except FileNotFoundError as e:
+        except Exception as e:
             raise QsyASMError('Error reading input: {}'.format(str(e)))
 
         self.time = args['time']
@@ -114,9 +115,7 @@ class QsyASMProgram:
                             instr.lineno
                         )
                     )
-            except QsyASMError as e:
-                raise e
-            except Exception as e:
+            except (RegisterIndexError, InvalidRegisterError) as e:
                 raise QsyASMError(self._error_message(e, instr.lexpos, instr.lineno))
 
     def dump_registers(self):

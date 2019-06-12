@@ -1,5 +1,7 @@
 import itertools
 
+from .error import InvalidRegisterError
+
 
 class Register:
     instance_counter = itertools.count()
@@ -7,7 +9,7 @@ class Register:
 
     def __init__(self, size, name=None):
         if size <= 0 or not isinstance(size, int):
-            raise Exception('Invalid register size "{}"'.format(size))
+            raise InvalidRegisterError('Invalid register size "{}"'.format(size))
 
         self.size = size
 
