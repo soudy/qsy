@@ -4,4 +4,3 @@ class RegisterIndexError(IndexError):
 
 class InvalidRegisterError(RuntimeError):
     pass
-

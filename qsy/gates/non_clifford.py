@@ -1,5 +1,6 @@
 import numpy as np
-from .gate import Gate, C, CC
+
+from .gate import CC, C, Gate
 from .pauli import X
 
 T_MATRIX = np.array([[1, 0],

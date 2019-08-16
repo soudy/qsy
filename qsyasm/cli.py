@@ -3,9 +3,9 @@ import sys
 
 from qsy import __version__
 
-from .program import QsyASMProgram
 from .error import QsyASMError
 from .log import print_error
+from .program import QsyASMProgram
 
 
 def main():

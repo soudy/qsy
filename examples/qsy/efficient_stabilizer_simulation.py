@@ -1,5 +1,5 @@
-from qsy.backends import CHPBackend
 from qsy import QuantumRegister, gates
+from qsy.backends import CHPBackend
 
 qr = QuantumRegister(500, backend=CHPBackend)
 

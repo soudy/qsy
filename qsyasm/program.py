@@ -1,17 +1,18 @@
-import numpy as np
 import time
 from collections import defaultdict
 
-from qsy import gates, __version__
-from qsy.util import format_complex
-from qsy.backends import StatevectorBackend, CHPBackend
-from qsy.error import RegisterIndexError, InvalidRegisterError
+import numpy as np
 
-from .error import ParseError, QsyASMError
-from .interpreter.parser import QsyASMParser
-from .instruction import Operation
+from qsy import __version__, gates
+from qsy.backends import CHPBackend, StatevectorBackend
+from qsy.error import InvalidRegisterError, RegisterIndexError
+from qsy.util import format_complex
+
 from .env import Env
-from .log import print_warning, print_info
+from .error import ParseError, QsyASMError
+from .instruction import Operation
+from .interpreter.parser import QsyASMParser
+from .log import print_info, print_warning
 
 OPERATION_GATES = {
     Operation.I: gates.I,

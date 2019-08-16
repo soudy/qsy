@@ -1,4 +1,5 @@
 import itertools
+
 from .register import Register
 
 

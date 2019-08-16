@@ -1,4 +1,5 @@
 import numpy as np
+
 from .gate import Gate
 
 PAULI_I_MATRIX = np.array([[1, 0],

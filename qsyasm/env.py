@@ -1,6 +1,7 @@
-from .error import QsyASMError
+from qsy import ClassicalRegister, QuantumRegister
 from qsy.error import RegisterIndexError
-from qsy import QuantumRegister, ClassicalRegister
+
+from .error import QsyASMError
 
 
 class Env:

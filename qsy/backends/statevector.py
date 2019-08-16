@@ -1,7 +1,8 @@
-import numpy as np
-import numpy.linalg as la
 import functools
 import itertools
+
+import numpy as np
+import numpy.linalg as la
 
 from qsy import gates
 from qsy.util import format_complex

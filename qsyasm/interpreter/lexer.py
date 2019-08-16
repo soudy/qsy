@@ -1,4 +1,5 @@
 import ply.lex as lex
+
 from qsyasm.error import ParseError
 
 

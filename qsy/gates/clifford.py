@@ -1,5 +1,6 @@
 import numpy as np
-from .gate import Gate, C
+
+from .gate import C, Gate
 from .pauli import X, Y, Z
 
 H_MATRIX = 1/np.sqrt(2) * np.array([[1,  1],

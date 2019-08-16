@@ -1,9 +1,11 @@
-import ply.yacc as yacc
 import itertools
-import numpy as np
 
-from qsyasm.instruction import Instruction
+import numpy as np
+import ply.yacc as yacc
+
 from qsyasm.error import ParseError
+from qsyasm.instruction import Instruction
+
 from .lexer import QsyASMLexer
 
 

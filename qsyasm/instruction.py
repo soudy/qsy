@@ -1,4 +1,5 @@
 from enum import IntEnum, auto, unique
+
 from .error import QsyASMError
 
 

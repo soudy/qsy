@@ -1,6 +1,6 @@
-from setuptools import setup, find_packages
 import re
 
+from setuptools import find_packages, setup
 
 with open('./qsy/__init__.py') as f:
     version, = re.findall('__version__ = \'(.*)\'', f.read())
